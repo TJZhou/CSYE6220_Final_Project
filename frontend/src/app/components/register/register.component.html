@@ -1,0 +1,26 @@
+<div class="loading" *ngIf="isLoading">
+  <mat-spinner class="my-spinner"></mat-spinner>
+</div>
+
+<div [ngStyle]="{backgroundImage:'url(assets/images/register-bg.jpg)'}" class="background-img"></div>
+
+<div class="container">
+  <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="center center" class="my-form">
+    <mat-form-field class="my-input">
+      <mat-label>E-Mail</mat-label>
+      <input matInput [(ngModel)]="email" (blur)="emailCheck()">
+    </mat-form-field>
+    <div class="my-div">
+      <p *ngIf="showErrMsg" class="error-msg">Invalid Email Format!</p>
+    </div>
+    <mat-form-field class="my-input">
+      <mat-label>Password</mat-label>
+      <input matInput [(ngModel)]="password" type="password">
+    </mat-form-field>
+    <button mat-raised-button color="primary" class="my-button" (click)="signIn()">Sign In</button>
+    <div class="my-div">
+      <a href='/login'> Already Have An Account</a>
+    </div>
+    <br>
+  </div>
+</div>
