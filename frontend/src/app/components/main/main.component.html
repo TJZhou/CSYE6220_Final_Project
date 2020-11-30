@@ -1,1 +1,31 @@
-<p>main works!</p>
+<mat-drawer-container class="main">
+  <mat-drawer mode="side" opened>
+    <div class="side-nav">
+      <app-side-bar></app-side-bar>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content>
+    <div class="content">
+      <mat-form-field>
+        <mat-label>Income Date</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let date of incomeDate" [value]="date">
+            {{date}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptions" class="pie-chart"></highcharts-chart>
+    </div>
+    <div class="content">
+      <mat-form-field>
+        <mat-label>Expense Date</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let date of incomeDate" [value]="date">
+            {{date}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptions" class="pie-chart"></highcharts-chart>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>

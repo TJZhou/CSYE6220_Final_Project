@@ -3,27 +3,39 @@
 html, body { height: 100%;}
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-.container {
-  margin: 0 auto;
-  max-width: 600px;
+.form-container {
   width: 60%;
-  padding-top:15%;
+  top:20%;
+  left: 20%;
+  position: absolute;
+  z-index: 0;
 }
 
-.background-img {
-  top:0;
-  left:0;
-  bottom: 0;
-  right: 0;
+.main {
   height: 100%;
   width: 100%;
-  position: absolute;
-  z-index: -999;
 }
 
+.side-nav {
+  width: 200px;
+}
+
+// .background-img {
+  // top:0;
+  // left:0;
+  // bottom: 0;
+  // right: 0;
+  // height: 100%;
+  // width: 100%;
+  // background-size: cover;
+  // background-repeat: no-repeat;
+  // position: absolute;
+  // z-index: -999;
+// }
+
 .my-form {
-  vertical-align: middle;
   padding: 50px 0 50px 0;
+  margin: 0 10% 0 10%;
   background-color: rgba($color: #C0C0C0, $alpha: 0.6);
 }
 

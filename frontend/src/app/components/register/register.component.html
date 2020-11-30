@@ -2,22 +2,57 @@
   <mat-spinner class="my-spinner"></mat-spinner>
 </div>
 
-<div [ngStyle]="{backgroundImage:'url(assets/images/register-bg.jpg)'}" class="background-img"></div>
+<!-- <div [ngStyle]="{backgroundImage:'url(assets/images/register-bg.jpg)'}" class="background-img"></div> -->
 
-<div class="container">
+<div class="form-container">
   <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="center center" class="my-form">
+
+    <!-- Email -->
     <mat-form-field class="my-input">
       <mat-label>E-Mail</mat-label>
       <input matInput [(ngModel)]="email" (blur)="emailCheck()">
     </mat-form-field>
     <div class="my-div">
-      <p *ngIf="showErrMsg" class="error-msg">Invalid Email Format!</p>
+      <p *ngIf="showErrMsgEmail" class="error-msg">Invalid Email Format</p>
     </div>
+
+    <!-- Username -->
+    <mat-form-field class="my-input">
+      <mat-label>Username</mat-label>
+      <input matInput [(ngModel)]="username" (blur)="usernameCheck()">
+    </mat-form-field>
+    <div class="my-div">
+      <p *ngIf="showErrMsgUsername" class="error-msg">Invalid Username Format</p>
+    </div>
+
+    <!-- Password -->
     <mat-form-field class="my-input">
       <mat-label>Password</mat-label>
-      <input matInput [(ngModel)]="password" type="password">
+      <input matInput [(ngModel)]="password" type="password" (blur)="passwordCheck()">
     </mat-form-field>
-    <button mat-raised-button color="primary" class="my-button" (click)="signIn()">Sign In</button>
+    <div class="my-div">
+      <p *ngIf="showErrMsgPassword" class="error-msg">Password Doesn't Meet Requirement (Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character)</p>
+    </div>
+
+    <!-- Confirm Password -->
+    <mat-form-field class="my-input">
+      <mat-label>Confirm Password</mat-label>
+      <input matInput [(ngModel)]="confirmPassword" type="password" (blur)="confirmPasswordCheck()">
+    </mat-form-field>
+    <div class="my-div">
+      <p *ngIf="showErrMsgConfirmPassword" class="error-msg">Password You Input Two Times Are Not Same</p>
+    </div>
+
+    <!-- Phone -->
+    <mat-form-field class="my-input">
+      <mat-label>Phone</mat-label>
+      <input matInput [(ngModel)]="phone" (blur)="phoneCheck()">
+    </mat-form-field>
+    <div class="my-div">
+      <p *ngIf="showErrMsgPhone" class="error-msg">Invalid Phone Format!</p>
+    </div>
+
+    <button mat-raised-button color="primary" class="my-button" (click)="register()">Register</button>
     <div class="my-div">
       <a href='/login'> Already Have An Account</a>
     </div>

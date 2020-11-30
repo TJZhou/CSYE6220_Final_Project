@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
       this.router.navigateByUrl('main');
     } else {
       this.errorMessage.open('Invalid Email And/Or Password', 'Err', {
-        duration: 2000,
+        duration: 3000,
       });
     }
   }
