@@ -1,3 +1,4 @@
+import { mockIncome, mockExpense } from './../../mock-data';
 import { Component, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
 
@@ -7,7 +8,14 @@ import * as Highcharts from 'highcharts';
   styleUrls: ['./main.component.scss'],
 })
 export class MainComponent implements OnInit {
+  incomeSelectedDate: string;
+  expenseSelectedDate: string;
+
   Highcharts: typeof Highcharts = Highcharts;
+  /**
+   * @type {Highcharts.Options}
+   * @memberof MainComponent
+   */
   chartOptions: Highcharts.Options = {
     chart: {
       plotBackgroundColor: null,
@@ -38,34 +46,26 @@ export class MainComponent implements OnInit {
         },
       },
     },
-    series: [
-      {
-        type: 'pie',
-        name: 'Browser share',
-        data: [
-          ['Firefox', 45.0],
-          ['IE', 26.8],
-          {
-            name: 'Chrome',
-            y: 12.8,
-            sliced: true,
-            selected: true,
-          },
-          ['Safari', 8.5],
-          ['Opera', 6.2],
-          ['Others', 0.7],
-        ],
-      },
-    ],
+    series: mockIncome as Highcharts.SeriesOptionsType[],
   };
 
   incomeDate: string[];
   expenseDate: string[];
 
   constructor() {
-    this.incomeDate = ['2020-11', '2020-10', '2020-09'];
-    this.expenseDate = ['2020-11', '2020-10', '2020-09'];
+    this.incomeDate = ['ALL', '2020-11', '2020-10', '2020-09'];
+    this.expenseDate = ['ALL', '2020-11', '2020-10', '2020-09'];
+    this.incomeSelectedDate = 'ALL';
+    this.expenseSelectedDate = 'ALL';
   }
 
   ngOnInit(): void {}
+
+  public changeIncomeDate(eventDate): void {
+    console.log(eventDate);
+  }
+
+  public changeExpenseDate(eventDate): void {
+    console.log(eventDate);
+  }
 }

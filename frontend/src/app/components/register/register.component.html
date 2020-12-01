@@ -2,7 +2,7 @@
   <mat-spinner class="my-spinner"></mat-spinner>
 </div>
 
-<!-- <div [ngStyle]="{backgroundImage:'url(assets/images/register-bg.jpg)'}" class="background-img"></div> -->
+<div [ngStyle]="{backgroundImage:'url(assets/images/register-bg.jpg)'}" class="background-img"></div>
 
 <div class="form-container">
   <div fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="center center" class="my-form">
@@ -40,7 +40,7 @@
       <input matInput [(ngModel)]="confirmPassword" type="password" (blur)="confirmPasswordCheck()">
     </mat-form-field>
     <div class="my-div">
-      <p *ngIf="showErrMsgConfirmPassword" class="error-msg">Password You Input Two Times Are Not Same</p>
+      <p *ngIf="showErrMsgConfirmPassword" class="error-msg">Password is Empty or Password You Input Two Times Are Not Same</p>
     </div>
 
     <!-- Phone -->

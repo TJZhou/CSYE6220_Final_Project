@@ -1,6 +1,7 @@
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Component } from '@angular/core';
+import { JwtModule } from '@auth0/angular-jwt';
 import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,8 +23,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MainComponent } from './components/main/main.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
 import { HighchartsChartModule } from 'highcharts-angular';
 @NgModule({
   declarations: [
@@ -52,10 +55,22 @@ import { HighchartsChartModule } from 'highcharts-angular';
     MatProgressSpinnerModule,
     MatSidenavModule,
     MatListModule,
+    MatTableModule,
+    MatDividerModule,
     FormsModule,
-    HighchartsChartModule
+    HighchartsChartModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => {
+          return localStorage.getItem('access_token');
+        },
+        allowedDomains: ['localhost:4200', 'localhost:8081']
+        // disallowedRoutes: ["http://example.com/examplebadroute/"],
+      },
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

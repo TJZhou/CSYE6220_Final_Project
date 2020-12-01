@@ -8,7 +8,7 @@
     <div class="content">
       <mat-form-field>
         <mat-label>Income Date</mat-label>
-        <mat-select>
+        <mat-select [(value)]="incomeSelectedDate" (selectionChange)="changeIncomeDate($event.value)">
           <mat-option *ngFor="let date of incomeDate" [value]="date">
             {{date}}
           </mat-option>
@@ -19,7 +19,7 @@
     <div class="content">
       <mat-form-field>
         <mat-label>Expense Date</mat-label>
-        <mat-select>
+        <mat-select [(value)]="expenseSelectedDate" (selectionChange)="changeExpenseDate($event.value)">
           <mat-option *ngFor="let date of incomeDate" [value]="date">
             {{date}}
           </mat-option>

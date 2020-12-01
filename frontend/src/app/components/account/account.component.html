@@ -1,4 +1,4 @@
-<mat-drawer-container class = "main">
+<mat-drawer-container class="main">
   <mat-drawer mode="side" opened>
     <div class="side-nav">
       <app-side-bar></app-side-bar>
@@ -6,7 +6,45 @@
   </mat-drawer>
   <mat-drawer-content>
     <div class="content">
-      Main content
+      <mat-form-field class="content-input">
+        <mat-label>Email</mat-label>
+        <input disabled matInput [value]="user.email">
+      </mat-form-field>
+      <mat-form-field class="content-input">
+        <mat-label>Username</mat-label>
+        <input matInput [(ngModel)]="user.username" (blur)="usernameCheck()">
+        <p *ngIf="showErrMsgUsername" class="error-msg">Invalid Username Format</p>
+      </mat-form-field>
+      <mat-form-field class="content-input">
+        <mat-label>Phone</mat-label>
+        <input matInput [(ngModel)]="user.phone" (blur)="phoneCheck()">
+        <p *ngIf="showErrMsgPhone" class="error-msg">Invalid Phone Format</p>
+      </mat-form-field>
+      <br>
+      <div class="update">
+        <button mat-raised-button color="primary" (click)="updateInfo()">Save</button>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="content">
+      <mat-form-field class="content-input">
+        <mat-label>Old Password</mat-label>
+        <input matInput type="password" [(ngModel)]="user.password">
+      </mat-form-field>
+      <mat-form-field class="content-input">
+        <mat-label>New Password</mat-label>
+        <input matInput type="password" [(ngModel)]="newPassword" (blur)="passwordCheck()">
+        <p *ngIf="showErrMsgPassword" class="error-msg">Password Doesn't Meet Requirement (Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character)</p>
+      </mat-form-field>
+      <mat-form-field class="content-input">
+        <mat-label>Confirm Password</mat-label>
+        <input matInput type="password" [(ngModel)]="confirmPassword" (blur)="confirmPasswordCheck()">
+        <p *ngIf="showErrMsgConfirmPassword" class="error-msg">Password is Empty or Password You Input Two Times Are Not Same</p>
+      </mat-form-field>
+      <br>
+      <div class="update">
+        <button mat-raised-button color="primary" (click)="updatePassword()">Update</button>
+      </div>
     </div>
   </mat-drawer-content>
 </mat-drawer-container>

@@ -1,4 +1,4 @@
-import { users } from './../../mock-data';
+import { users, mockToken } from './../../mock-data';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit {
 
   public signIn(): void {
     if (!this.showErrMsg && this.passwordCheck()) {
+      localStorage.setItem('access_token', mockToken);
       this.router.navigateByUrl('main');
     } else {
       this.errorMessage.open('Invalid Email And/Or Password', 'Err', {

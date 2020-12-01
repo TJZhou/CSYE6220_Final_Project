@@ -16,6 +16,7 @@ export class SideBarComponent implements OnInit {
   }
 
   public logOut(): void {
+    localStorage.removeItem('access_token');
     this.router.navigateByUrl('login');
   }
 }
