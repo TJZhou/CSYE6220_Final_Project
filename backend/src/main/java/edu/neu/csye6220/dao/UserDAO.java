@@ -1,6 +1,9 @@
 package edu.neu.csye6220.dao;
 
+import edu.neu.csye6220.exceptions.InvalidUserInfoException;
+import edu.neu.csye6220.exceptions.UserNotFoundException;
 import edu.neu.csye6220.models.User;
+import edu.neu.csye6220.models.pojos.UserPassword;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -8,16 +11,23 @@ import java.util.Optional;
 
 @Service(value = "userService")
 public class UserDAO extends DAO{
+
+    public User checkLogin(String email, String password) {
+        Optional<User> user = getUserByEmail(email);
+        User u = user.orElseThrow(() -> new UserNotFoundException("User doesn't exist, please sign up first!"));
+        if(!u.getPassword().equals(password))
+            throw new InvalidUserInfoException("Invalid Credential!");
+        return u;
+    }
     
-    public boolean userExists(User u) {
-        String sql = "select * from User where email=:email";
-        Query<User> query = getSession().createNativeQuery(sql, User.class);
-        query.setParameter("email", u.getEmail());
+    public Optional<User> getUserByEmail(String email) {
+        Query<User> query = getSession().createNativeQuery(CustomQuery.GET_USER_BY_EMAIL, User.class);
+        query.setParameter("email", email);
         try {
             begin();
             Optional<User> optionalUser = query.uniqueResultOptional();
             commit();
-            return optionalUser.isPresent();
+            return optionalUser;
         } catch (Exception e) {
             rollback();
             throw e;
@@ -26,9 +36,8 @@ public class UserDAO extends DAO{
         }
     }
 
-    public Optional<User> getUser(int id) {
-        String sql = "select * from User where user_id =:id";
-        Query<User> query = getSession().createNativeQuery(sql, User.class);
+    public Optional<User> getUserById(long id) {
+        Query<User> query = getSession().createNativeQuery(CustomQuery.GET_USER_BY_ID, User.class);
         query.setParameter("id", id);
         Optional<User> u;
         try {
@@ -44,12 +53,50 @@ public class UserDAO extends DAO{
         }
     }
 
-    public int createUser(User u) {
+    public long createUser(User u) {
         try {
             begin();
-            int userId = (Integer) getSession().save(u);
+            long userId = (Integer) getSession().save(u);
             commit();
             return userId;
+        } catch (Exception e) {
+            rollback();
+            throw e;
+        } finally {
+            close();
+        }
+    }
+
+    public User updateUserInfo(long id, User newU) {
+        Optional<User> user = getUserById(id);
+        User u = user.orElseThrow(() -> new UserNotFoundException("Invalid Id! User doesn't exist!"));
+        try {
+            begin();
+            u.setUsername(newU.getUsername());
+            u.setPhone(newU.getPhone());
+            u.setEmail(newU.getEmail());
+            getSession().update(u);
+            commit();
+            return u;
+        } catch (Exception e) {
+            rollback();
+            throw e;
+        } finally {
+            close();
+        }
+    }
+
+    public User updatePassword(long id, UserPassword pswd) {
+        Optional<User> user = getUserById(id);
+        User u = user.orElseThrow(() -> new UserNotFoundException("Invalid Id! User doesn't exist!"));
+        if(!u.getPassword().equals(pswd.getOldPassword()))
+            throw new InvalidUserInfoException("Old password is incorrect");
+        try {
+            begin();
+            u.setPassword(pswd.getNewPassword());
+            getSession().update(u);
+            commit();
+            return u;
         } catch (Exception e) {
             rollback();
             throw e;

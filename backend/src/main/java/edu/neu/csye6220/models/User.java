@@ -1,6 +1,7 @@
 package edu.neu.csye6220.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -11,7 +12,7 @@ public class User implements Serializable {
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     @NotNull
     @Size(min = 4, max = 50, message = "Length of username should within 4 ~ 50")
     private String username;
@@ -19,6 +20,7 @@ public class User implements Serializable {
     @Size(min = 6, max = 20, message = "Length of password should within 4 ~ 20")
     private String password;
     @NotNull
+    @Email
     @Size(min = 4, max = 50, message = "Length of email should within 4 ~ 50")
     private String email;
     @Size(min = 6, max = 15, message = "Length of phone number should within 6 ~ 15")
@@ -33,11 +35,11 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
