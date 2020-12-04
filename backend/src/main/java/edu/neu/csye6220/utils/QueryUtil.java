@@ -8,5 +8,8 @@ public class QueryUtil {
             "select * from user where email = :email";
 
     public static final String GET_INCOME =
-            "select * from income i where i.user_id = :id and i.date like :date";
+            "select * from income where id = :id";
+
+    public static final String GET_INCOMES =
+            "select * from income i where i.user_id = :userId and i.date like :date";
 }

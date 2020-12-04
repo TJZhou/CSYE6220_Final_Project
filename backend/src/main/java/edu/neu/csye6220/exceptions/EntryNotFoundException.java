@@ -1,8 +1,8 @@
 package edu.neu.csye6220.exceptions;
 
-public class UserAlreadyExistsException extends RuntimeException{
+public class EntryNotFoundException extends RuntimeException{
     private final int code;
-    public UserAlreadyExistsException(int code, String message) {
+    public EntryNotFoundException(int code, String message) {
         super(message);
         this.code = code;
     }

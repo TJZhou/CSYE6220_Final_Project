@@ -16,9 +16,10 @@ public class UserDAO extends DAO{
 
     public User checkLogin(String email, String password) {
         Optional<User> user = getUserByEmail(email);
-        User u = user.orElseThrow(() -> new UserNotFoundException(Status.USER_NOT_FOUND.getMsg()));
+        User u = user.orElseThrow(() ->
+                new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg()));
         if(!u.getPassword().equals(password))
-            throw new InvalidUserInfoException(Status.INVALID_CREDENTIAL.getMsg());
+            throw new InvalidUserInfoException(Status.INVALID_CREDENTIAL.getCode(), Status.INVALID_CREDENTIAL.getMsg());
         return u;
     }
     
@@ -38,15 +39,15 @@ public class UserDAO extends DAO{
         }
     }
 
-    public Optional<User> getUserById(long id) {
+    public User getUserById(long id) {
         Query<User> query = getSession().createNativeQuery(QueryUtil.GET_USER_BY_ID, User.class);
         query.setParameter("id", id);
-        Optional<User> u;
         try {
             begin();
-            u = query.uniqueResultOptional();
+            Optional<User> u = query.uniqueResultOptional();
             commit();
-            return u;
+            return u.orElseThrow(() ->
+                    new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg()));
         } catch (Exception e) {
             rollback();
             throw e;
@@ -70,8 +71,7 @@ public class UserDAO extends DAO{
     }
 
     public User updateUserInfo(long id, User newU) {
-        Optional<User> user = getUserById(id);
-        User u = user.orElseThrow(() -> new UserNotFoundException(Status.USER_NOT_FOUND.getMsg()));
+        User u = getUserById(id);
         try {
             begin();
             u.setUsername(newU.getUsername());
@@ -89,10 +89,9 @@ public class UserDAO extends DAO{
     }
 
     public User updatePassword(long id, UserPassword pswd) {
-        Optional<User> user = getUserById(id);
-        User u = user.orElseThrow(() -> new UserNotFoundException(Status.USER_NOT_FOUND.getMsg()));
+        User u = getUserById(id);
         if(!u.getPassword().equals(pswd.getOldPassword()))
-            throw new InvalidUserInfoException(Status.INVALID_CREDENTIAL.getMsg());
+            throw new InvalidUserInfoException(Status.INVALID_CREDENTIAL.getCode(), Status.INVALID_CREDENTIAL.getMsg());
         try {
             begin();
             u.setPassword(pswd.getNewPassword());

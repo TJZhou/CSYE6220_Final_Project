@@ -1,6 +1,9 @@
 package edu.neu.csye6220.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import edu.neu.csye6220.utils.RegexUtil;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -32,9 +35,13 @@ public class User implements Serializable {
     @Pattern(regexp = RegexUtil.PHONE_PATTERN, message = RegexUtil.INVALID_PHONE)
     private String phone;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Collection<Income> incomes;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference
     private Collection<Expense> expenses;
 
     public User() { }
