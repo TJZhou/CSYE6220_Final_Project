@@ -3,22 +3,31 @@ package edu.neu.csye6220.models;
 import edu.neu.csye6220.models.enums.IncomeType;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.sql.Date;
 
 @Entity
 @Table(name = "income")
-public class Income {
+public class Income implements Serializable {
     @Id
     @Column(name = "income_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @DecimalMin(value = "0", message = "Amount should greater than 0")
+    @DecimalMax(value = "999999999999", message = "Amount should less than 1,000,000,000,000")
     private BigDecimal amount;
-    @Column(columnDefinition = "ENUM('salary', 'stock', 'investment', 'scholarship', 'other')")
+
+    @Column(columnDefinition = "ENUM('Salary', 'Stock', 'Investment', 'Scholarship', 'Other')")
     @Enumerated(EnumType.STRING)
     private IncomeType type;
-    private Timestamp date;
+
+    private Date date;
     private String note;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -47,11 +56,11 @@ public class Income {
         this.type = type;
     }
 
-    public Timestamp getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

@@ -1,9 +1,11 @@
 package edu.neu.csye6220.models;
 
+import edu.neu.csye6220.utils.RegexUtil;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -14,21 +16,25 @@ public class User implements Serializable {
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @NotNull
-    @Size(min = 4, max = 50, message = "Length of username should within 4 ~ 50")
+    @Pattern(regexp = RegexUtil.USERNAME_PATTERN, message = RegexUtil.INVALID_USERNAME)
     private String username;
+
     @NotNull
-    @Size(min = 6, max = 20, message = "Length of password should within 4 ~ 20")
+    @Pattern(regexp = RegexUtil.PASSWORD_PATTERN, message = RegexUtil.INVALID_PASSWORD)
     private String password;
+
     @NotNull
-    @Email
-    @Size(min = 4, max = 50, message = "Length of email should within 4 ~ 50")
+    @Email(message = RegexUtil.INVALID_EMAIL)
     private String email;
-    @Size(min = 6, max = 15, message = "Length of phone number should within 6 ~ 15")
+
+    @Pattern(regexp = RegexUtil.PHONE_PATTERN, message = RegexUtil.INVALID_PHONE)
     private String phone;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
     private Collection<Income> incomes;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
     private Collection<Expense> expenses;
 
     public User() { }

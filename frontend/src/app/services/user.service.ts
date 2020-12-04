@@ -22,7 +22,6 @@ export class UserService {
   }
 
   public checkLogin(user: User): Observable<ResponseWrapper<string>> {
-    console.log(user);
     return this.http.post<ResponseWrapper<string>>(this.userUrl + 'login', user);
   }
 

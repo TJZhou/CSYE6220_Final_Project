@@ -31,6 +31,6 @@
     <context:annotation-config />
     <context:component-scan base-package="edu.neu.csye6220" />
     <bean id="userDAO" class="edu.neu.csye6220.dao.UserDAO"/>
-<!--    <bean id="userNotFoundException" class="edu.neu.csye6220.exceptions.UserNotFoundException"/>-->
-<!--    <bean id="userAlreadyExistsException" class="edu.neu.csye6220.exceptions.UserAlreadyExistsException"/>-->
+    <bean id="incomeDAO" class="edu.neu.csye6220.dao.IncomeDAO"/>
+    <bean id="expenseDAO" class="edu.neu.csye6220.dao.ExpenseDAO"/>
 </beans>

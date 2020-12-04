@@ -16,7 +16,20 @@ export class ExpenseDetailComponent implements OnInit {
   constructor() {
     this.expenses = mockData;
     this.displayedColumns = ['amount', 'type', 'date', 'note', 'action'];
-    this.expenseDate = ['ALL', '2020-10', '2020-11', '2020-12'];
+    this.expenseDate = ['ALL'];
+    const today = new Date();
+    // add recent 24 months into list
+    let aMonth = today.getMonth();
+    let aYear = today.getFullYear();
+    for (let i = 0; i < 24; i++) {
+        // add 0 if month is (1 ~ 9), eg 2020-01, 2020-02...
+        this.expenseDate.push(aYear + (aMonth < 9 ? '-0' : '-') + (aMonth + 1));
+        aMonth--;
+        if (aMonth < 0) {
+            aMonth = 11;
+            aYear--;
+        }
+    }
     this.expenseSelectedDate = 'ALL';
   }
 

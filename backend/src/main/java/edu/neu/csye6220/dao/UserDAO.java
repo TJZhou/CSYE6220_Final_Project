@@ -5,6 +5,7 @@ import edu.neu.csye6220.exceptions.UserNotFoundException;
 import edu.neu.csye6220.models.User;
 import edu.neu.csye6220.models.enums.Status;
 import edu.neu.csye6220.models.pojos.UserPassword;
+import edu.neu.csye6220.utils.QueryUtil;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class UserDAO extends DAO{
     }
     
     public Optional<User> getUserByEmail(String email) {
-        Query<User> query = getSession().createNativeQuery(CustomQuery.GET_USER_BY_EMAIL, User.class);
+        Query<User> query = getSession().createNativeQuery(QueryUtil.GET_USER_BY_EMAIL, User.class);
         query.setParameter("email", email);
         try {
             begin();
@@ -38,7 +39,7 @@ public class UserDAO extends DAO{
     }
 
     public Optional<User> getUserById(long id) {
-        Query<User> query = getSession().createNativeQuery(CustomQuery.GET_USER_BY_ID, User.class);
+        Query<User> query = getSession().createNativeQuery(QueryUtil.GET_USER_BY_ID, User.class);
         query.setParameter("id", id);
         Optional<User> u;
         try {
