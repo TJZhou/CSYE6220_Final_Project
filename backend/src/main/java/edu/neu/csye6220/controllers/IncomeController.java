@@ -30,18 +30,18 @@ public class IncomeController {
                 Status.GET_INCOMES_SUCCESS.getCode(), Status.GET_INCOMES_SUCCESS.getMsg(), incomes));
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseWrapper<Long>> addIncome(@RequestParam Income income) {
-        long id = incomeDAO.createIncome(income);
+    @PostMapping(value = "/{userId}")
+    public ResponseEntity<ResponseWrapper<Long>> addIncome(@PathVariable long userId, @RequestBody Income income) {
+        long id = incomeDAO.createIncome(userId, income);
         return ResponseEntity.ok(
-                new ResponseWrapper<>(Status.CREATE_INCOME_SUCCESS.getCode(), Status.CREATE_INCOME_SUCCESS.getMsg()));
+                new ResponseWrapper<>(Status.CREATE_INCOME_SUCCESS.getCode(), Status.CREATE_INCOME_SUCCESS.getMsg(), id));
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ResponseWrapper<Income>> updateIncome(@PathVariable long id, Income income) {
+    public ResponseEntity<ResponseWrapper<Income>> updateIncome(@PathVariable long id, @RequestBody  Income income) {
         Income newIncome = incomeDAO.updateIncome(id, income);
         return ResponseEntity.ok(
-                new ResponseWrapper<>(Status.UPDATE_INCOME_SUCCESS.getCode(), Status.UPDATE_INCOME_SUCCESS.getMsg()));
+                new ResponseWrapper<>(Status.UPDATE_INCOME_SUCCESS.getCode(), Status.UPDATE_INCOME_SUCCESS.getMsg(), newIncome));
     }
 
     @DeleteMapping(value = "/{id}")

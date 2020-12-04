@@ -39,6 +39,7 @@ public class User implements Serializable {
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonManagedReference
     private Collection<Income> incomes;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonManagedReference

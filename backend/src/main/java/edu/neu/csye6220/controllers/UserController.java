@@ -2,7 +2,6 @@ package edu.neu.csye6220.controllers;
 
 import edu.neu.csye6220.dao.UserDAO;
 import edu.neu.csye6220.exceptions.UserAlreadyExistsException;
-import edu.neu.csye6220.exceptions.UserNotFoundException;
 import edu.neu.csye6220.models.ResponseWrapper;
 import edu.neu.csye6220.models.User;
 import edu.neu.csye6220.models.enums.Status;
@@ -10,8 +9,6 @@ import edu.neu.csye6220.models.pojos.UserPassword;
 import edu.neu.csye6220.utils.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -25,7 +22,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<ResponseWrapper<Long>> createUser(@RequestBody User user) {
-        if(userDAO.getUserByEmail(user.getEmail()).isPresent())
+        if(userDAO.getUserByEmail(user.getEmail()) != null)
             throw new UserAlreadyExistsException(Status.USER_ALREADY_EXISTS.getCode(), Status.USER_ALREADY_EXISTS.getMsg());
         long id = userDAO.createUser(user);
         return ResponseEntity.ok(

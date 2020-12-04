@@ -1,10 +1,12 @@
 package edu.neu.csye6220.models;
 
-import edu.neu.csye6220.models.enums.IncomeType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import edu.neu.csye6220.models.enums.ExpenseType;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -23,13 +25,15 @@ public class Expense implements Serializable {
 
     @Column(columnDefinition = "ENUM('Housing', 'Transportation', 'Food', 'Utilities', 'Clothing', 'Healthcare', 'Insurance', 'Debt', 'Education', 'Entertainment', 'Other')")
     @Enumerated(EnumType.STRING)
-    private IncomeType type;
+    private ExpenseType type;
 
     private Date date;
+    @Size(max = 500)
     private String note;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
 
     public long getId() {
@@ -48,11 +52,11 @@ public class Expense implements Serializable {
         this.amount = amount;
     }
 
-    public IncomeType getType() {
+    public ExpenseType getType() {
         return type;
     }
 
-    public void setType(IncomeType type) {
+    public void setType(ExpenseType type) {
         this.type = type;
     }
 

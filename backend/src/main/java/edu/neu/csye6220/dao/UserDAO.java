@@ -9,28 +9,27 @@ import edu.neu.csye6220.utils.QueryUtil;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service(value = "userService")
 public class UserDAO extends DAO{
 
     public User checkLogin(String email, String password) {
-        Optional<User> user = getUserByEmail(email);
-        User u = user.orElseThrow(() ->
-                new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg()));
+        User u = getUserByEmail(email);
         if(!u.getPassword().equals(password))
             throw new InvalidUserInfoException(Status.INVALID_CREDENTIAL.getCode(), Status.INVALID_CREDENTIAL.getMsg());
         return u;
     }
     
-    public Optional<User> getUserByEmail(String email) {
+    public User getUserByEmail(String email) {
         Query<User> query = getSession().createNativeQuery(QueryUtil.GET_USER_BY_EMAIL, User.class);
         query.setParameter("email", email);
         try {
             begin();
-            Optional<User> optionalUser = query.uniqueResultOptional();
-            commit();
-            return optionalUser;
+            User user = query.uniqueResult();
+            if(user != null) {
+                commit();
+                return user;
+            } else
+              throw new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg());
         } catch (Exception e) {
             rollback();
             throw e;
@@ -40,14 +39,14 @@ public class UserDAO extends DAO{
     }
 
     public User getUserById(long id) {
-        Query<User> query = getSession().createNativeQuery(QueryUtil.GET_USER_BY_ID, User.class);
-        query.setParameter("id", id);
         try {
             begin();
-            Optional<User> u = query.uniqueResultOptional();
-            commit();
-            return u.orElseThrow(() ->
-                    new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg()));
+            User u = getSession().get(User.class, id);
+            if(u != null) {
+                commit();
+                return u;
+            } else
+                throw new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg());
         } catch (Exception e) {
             rollback();
             throw e;

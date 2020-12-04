@@ -12,11 +12,17 @@ public enum Status {
     UPDATE_INCOME_SUCCESS(2012, "Successfully update an income"),
     DELETE_INCOME_SUCCESS(2013, "Successfully delete an income"),
 
+    GET_EXPENSES_SUCCESS(2020, "Successfully get expenses"),
+    CREATE_EXPENSE_SUCCESS(2021, "Successfully create an expense"),
+    UPDATE_EXPENSE_SUCCESS(2022, "Successfully update an expense"),
+    DELETE_EXPENSE_SUCCESS(2023, "Successfully delete an expense"),
+
     USER_NOT_FOUND(4000, "User not found"),
     USER_ALREADY_EXISTS(4001, "User already exists, please login"),
     INVALID_CREDENTIAL(4002, "Invalid Credential"),
 
     INCOME_NOT_FOUND(4010, "Income not found"),
+    EXPENSE_NOT_FOUND(4020, "Expense not found"),
 
     CONSTRAINT_VIOLATION(4100, "Inputs violate validation");
 

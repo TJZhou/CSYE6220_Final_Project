@@ -6,6 +6,7 @@ import edu.neu.csye6220.models.enums.IncomeType;
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -27,6 +28,7 @@ public class Income implements Serializable {
     private IncomeType type;
 
     private Date date;
+    @Size(max = 500)
     private String note;
 
     @ManyToOne

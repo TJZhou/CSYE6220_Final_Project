@@ -2,25 +2,32 @@ package edu.neu.csye6220.dao;
 
 import edu.neu.csye6220.exceptions.EntryNotFoundException;
 import edu.neu.csye6220.models.Income;
+import edu.neu.csye6220.models.User;
 import edu.neu.csye6220.models.enums.Status;
 import edu.neu.csye6220.utils.QueryUtil;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Service(value = "incomeService")
 public class IncomeDAO extends DAO{
 
-    public Optional<Income> getIncome(long id) {
-        Query<Income> query = getSession().createNativeQuery(QueryUtil.GET_INCOME, Income.class);
-        query.setParameter("id", id);
+    private final UserDAO userDAO;
+
+    public IncomeDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
+
+    public Income getIncome(long id) {
         try {
             begin();
-            Optional<Income> income = query.uniqueResultOptional();
-            commit();
-            return income;
+            Income income = getSession().get(Income.class, id);
+            if(income != null) {
+                commit();
+                return income;
+            } else
+                throw new EntryNotFoundException(Status.INCOME_NOT_FOUND.getCode(), Status.INCOME_NOT_FOUND.getMsg());
         } catch (Exception e) {
             rollback();
             throw e;
@@ -47,12 +54,15 @@ public class IncomeDAO extends DAO{
         }
     }
 
-    public long createIncome(Income income) {
+    public long createIncome(long id, Income income) {
+        User user = userDAO.getUserById(id);
         try {
             begin();
-            long incomeId = (long) getSession().save(income);
+            income.setUser(user);
+            user.getIncomes().add(income);
+            getSession().update(user);
             commit();
-            return incomeId;
+            return income.getId();
         } catch (Exception e) {
             rollback();
             throw e;
@@ -62,9 +72,7 @@ public class IncomeDAO extends DAO{
     }
 
     public Income updateIncome(long id, Income newIncome) {
-        Optional<Income> optionalIncome = getIncome(id);
-        Income income = optionalIncome.orElseThrow(() ->
-                new EntryNotFoundException(Status.INCOME_NOT_FOUND.getCode(), Status.INCOME_NOT_FOUND.getMsg()));
+        Income income = getIncome(id);
         try {
             begin();
             income.setAmount(newIncome.getAmount());
@@ -83,9 +91,7 @@ public class IncomeDAO extends DAO{
     }
 
     public void deleteIncome(long id) {
-        Optional<Income> optionalIncome = getIncome(id);
-        Income income = optionalIncome.orElseThrow(() ->
-                new EntryNotFoundException(Status.INCOME_NOT_FOUND.getCode(), Status.INCOME_NOT_FOUND.getMsg()));
+        Income income = getIncome(id);
         try {
             begin();
             getSession().delete(income);
