@@ -1,4 +1,3 @@
-
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Component } from '@angular/core';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -15,6 +14,7 @@ import { BillComponent } from './components/bill/bill.component';
 import { AccountComponent } from './components/account/account.component';
 import { ExpenseDetailComponent } from './components/expense-detail/expense-detail.component';
 import { IncomeDetailComponent } from './components/income-detail/income-detail.component';
+import { HttpClientModule } from '@angular/common/http';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -59,12 +59,13 @@ import { HighchartsChartModule } from 'highcharts-angular';
     MatDividerModule,
     FormsModule,
     HighchartsChartModule,
+    HttpClientModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: () => {
           return localStorage.getItem('access_token');
         },
-        allowedDomains: ['localhost:4200', 'localhost:8081']
+        allowedDomains: ['localhost:4200', 'localhost:8080']
         // disallowedRoutes: ["http://example.com/examplebadroute/"],
       },
     }),

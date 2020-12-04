@@ -5,6 +5,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Collection;
 
 @Entity
 @Table(name = "user")
@@ -25,6 +26,10 @@ public class User implements Serializable {
     private String email;
     @Size(min = 6, max = 15, message = "Length of phone number should within 6 ~ 15")
     private String phone;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Collection<Income> incomes;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Collection<Expense> expenses;
 
     public User() { }
 
@@ -73,5 +78,21 @@ public class User implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Collection<Income> getIncomes() {
+        return incomes;
+    }
+
+    public void setIncomes(Collection<Income> incomes) {
+        this.incomes = incomes;
+    }
+
+    public Collection<Expense> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(Collection<Expense> expenses) {
+        this.expenses = expenses;
     }
 }

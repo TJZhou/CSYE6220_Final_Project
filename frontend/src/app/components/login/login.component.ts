@@ -1,9 +1,11 @@
+import { ResponseWrapper } from './../../models/response-wrapper';
 import { users, mockToken } from './../../mock-data';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user';
+import { Observable } from 'rxjs';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -18,7 +20,7 @@ export class LoginComponent implements OnInit {
   showErrMsg: boolean;
 
 
-  constructor(private router: Router, private errorMessage: MatSnackBar) {
+  constructor(private userService: UserService, private router: Router, private errorMessage: MatSnackBar) {
     this.isLoading = false;
     this.showErrMsg = false;
     this.validEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -28,9 +30,17 @@ export class LoginComponent implements OnInit {
   }
 
   public signIn(): void {
-    if (!this.showErrMsg && this.passwordCheck()) {
-      localStorage.setItem('access_token', mockToken);
-      this.router.navigateByUrl('main');
+    if (!this.showErrMsg) {
+      this.isLoading = true;
+      this.passwordCheck().subscribe(resp => {
+        localStorage.setItem('access_token', resp.data);
+        this.router.navigateByUrl('main');
+      }, err => {
+        this.errorMessage.open('Invalid Email And/Or Password', 'Err', {
+          duration: 3000,
+        });
+      });
+      this.isLoading = false;
     } else {
       this.errorMessage.open('Invalid Email And/Or Password', 'Err', {
         duration: 3000,
@@ -38,10 +48,9 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  private passwordCheck(): boolean {
-    return users.some(user =>
-      user.email === this.email && user.password === this.password
-    );
+  private passwordCheck(): Observable<ResponseWrapper<string>> {
+    const user: User = new User('', this.password, this.email, '');
+    return this.userService.checkLogin(user);
   }
 
   public emailCheck(): void {

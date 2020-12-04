@@ -1,14 +1,18 @@
+import { UserService } from './../../services/user.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { User } from './../../models/user';
 import { Component, OnInit } from '@angular/core';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { IfStmt } from '@angular/compiler';
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.scss'],
 })
 export class AccountComponent implements OnInit {
+  isLoading: boolean;
   user: User;
+  oldPassword: string;
   newPassword: string;
   confirmPassword: string;
   validPassword: RegExp;
@@ -19,10 +23,11 @@ export class AccountComponent implements OnInit {
   showErrMsgConfirmPassword: boolean;
   showErrMsgPhone: boolean;
 
-  constructor(private jwtHelper: JwtHelperService) {
+  constructor(private jwtHelper: JwtHelperService, private userService: UserService, private errorMessage: MatSnackBar) {
+    this.isLoading = false;
     const token = jwtHelper.decodeToken(localStorage.getItem('access_token'));
-    console.log(token);
-    this.user = new User(token.name, null, token.email, token.phone);
+    this.user = new User(token.username, null, token.email, token.phone);
+    this.user.userId = token.aud;
     this.validUsername = /^[a-zA-Z0-9]+([_\.-]?[a-zA-Z0-9])*$/;
     this.validPhone = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
     this.validPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -30,9 +35,50 @@ export class AccountComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  public updateInfo(): void {}
+  public updateInfo(): void {
+    if (this.usernameCheck() && this.phoneCheck()) {
+      this.isLoading = true;
+      this.userService.updateUserInfo(this.user).subscribe(resp => {
+        this.isLoading = false;
+        alert('Successfully update user information!');
+      }, err => {
+        this.isLoading = false;
+        this.errorMessage.open(err.error.message, 'Err', {
+          duration: 5000,
+        });
+      });
+    } else {
+      this.errorMessage.open('Please fill all blank fields and check error information', 'Err', {
+        duration: 5000,
+      });
+    }
+  }
 
-  public updatePassword(): void {}
+  public updatePassword(): void {
+    if (this.passwordCheck() && this.confirmPasswordCheck()) {
+      this.isLoading = true;
+      this.userService.updateUserPassword(this.user.userId, this.oldPassword, this.newPassword)
+        .subscribe(resp => {
+          this.isLoading = false;
+          alert('Password updated successfully');
+          this.oldPassword = null;
+          this.newPassword = null;
+          this.confirmPassword = null;
+        }, err => {
+          this.oldPassword = null;
+          this.newPassword = null;
+          this.confirmPassword = null;
+          this.isLoading = false;
+          this.errorMessage.open(err.error.message, 'Err', {
+            duration: 5000,
+          });
+        });
+    } else {
+      this.errorMessage.open('Please fill all blank fields and check error information', 'Err', {
+        duration: 5000,
+      });
+    }
+  }
 
   public usernameCheck(): boolean {
     // if it's not valid (validate function returns false), then showErrMsgUsername should be true

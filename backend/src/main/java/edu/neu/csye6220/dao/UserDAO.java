@@ -3,6 +3,7 @@ package edu.neu.csye6220.dao;
 import edu.neu.csye6220.exceptions.InvalidUserInfoException;
 import edu.neu.csye6220.exceptions.UserNotFoundException;
 import edu.neu.csye6220.models.User;
+import edu.neu.csye6220.models.enums.Status;
 import edu.neu.csye6220.models.pojos.UserPassword;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,9 @@ public class UserDAO extends DAO{
 
     public User checkLogin(String email, String password) {
         Optional<User> user = getUserByEmail(email);
-        User u = user.orElseThrow(() -> new UserNotFoundException("User doesn't exist, please sign up first!"));
+        User u = user.orElseThrow(() -> new UserNotFoundException(Status.USER_NOT_FOUND.getMsg()));
         if(!u.getPassword().equals(password))
-            throw new InvalidUserInfoException("Invalid Credential!");
+            throw new InvalidUserInfoException(Status.INVALID_CREDENTIAL.getMsg());
         return u;
     }
     
@@ -56,7 +57,7 @@ public class UserDAO extends DAO{
     public long createUser(User u) {
         try {
             begin();
-            long userId = (Integer) getSession().save(u);
+            long userId = (long) getSession().save(u);
             commit();
             return userId;
         } catch (Exception e) {
@@ -69,7 +70,7 @@ public class UserDAO extends DAO{
 
     public User updateUserInfo(long id, User newU) {
         Optional<User> user = getUserById(id);
-        User u = user.orElseThrow(() -> new UserNotFoundException("Invalid Id! User doesn't exist!"));
+        User u = user.orElseThrow(() -> new UserNotFoundException(Status.USER_NOT_FOUND.getMsg()));
         try {
             begin();
             u.setUsername(newU.getUsername());
@@ -88,9 +89,9 @@ public class UserDAO extends DAO{
 
     public User updatePassword(long id, UserPassword pswd) {
         Optional<User> user = getUserById(id);
-        User u = user.orElseThrow(() -> new UserNotFoundException("Invalid Id! User doesn't exist!"));
+        User u = user.orElseThrow(() -> new UserNotFoundException(Status.USER_NOT_FOUND.getMsg()));
         if(!u.getPassword().equals(pswd.getOldPassword()))
-            throw new InvalidUserInfoException("Old password is incorrect");
+            throw new InvalidUserInfoException(Status.INVALID_CREDENTIAL.getMsg());
         try {
             begin();
             u.setPassword(pswd.getNewPassword());

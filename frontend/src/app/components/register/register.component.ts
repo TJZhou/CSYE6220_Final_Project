@@ -1,8 +1,9 @@
+import { UserService } from './../../services/user.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { User } from '../../models/user';
-
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +28,7 @@ export class RegisterComponent implements OnInit {
   showErrMsgConfirmPassword: boolean;
   showErrMsgPhone: boolean;
 
-  constructor(private router: Router, private errorMessage: MatSnackBar) {
+  constructor(private router: Router, private errorMessage: MatSnackBar, private userService: UserService) {
     this.isLoading = false;
     this.showErrMsgUsername = false;
     this.showErrMsgEmail = false;
@@ -46,7 +47,17 @@ export class RegisterComponent implements OnInit {
   public register(): void {
     if (this.emailCheck() && this.usernameCheck() && this.passwordCheck() && this.confirmPasswordCheck() && this.phoneCheck()) {
       const user: User = new User(this.username, this.password, this.email, this.phone);
-      this.router.navigateByUrl('login');
+      this.isLoading = true;
+      this.userService.createUser(user).subscribe(resp => {
+        this.isLoading = false;
+        alert('Create User Successfully!');
+        this.router.navigateByUrl('login');
+      }, err => {
+        this.isLoading = false;
+        this.errorMessage.open(err.error.message, 'Err', {
+          duration: 5000,
+        });
+      });
     } else {
       this.errorMessage.open('Please fill all blank fields and check error information', 'Err', {
         duration: 5000,

@@ -12,5 +12,7 @@
     <property name="hbm2ddl.auto">update</property>
     <property name="show_sql">true</property>
     <mapping class="edu.neu.csye6220.models.User"/>
+    <mapping class="edu.neu.csye6220.models.Income"/>
+    <mapping class="edu.neu.csye6220.models.Expense"/>
   </session-factory>
 </hibernate-configuration>
