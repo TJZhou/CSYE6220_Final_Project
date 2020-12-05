@@ -2,6 +2,45 @@
   <mat-spinner class="my-spinner"></mat-spinner>
 </div>
 
+<div class="shadow" *ngIf="showAddExpense">
+  <div class="form-container">
+    <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center center" class="my-form">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Amount</mat-label>
+        <input matInput [(ngModel)]="expenseAmount">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Expense Type</mat-label>
+        <mat-select [(value)]="expenseTypeKey">
+          <mat-option *ngFor="let type of expenseTypes" [value]="type.key">{{ type.value }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field color="accent" appearance="outline" style="width: 200px;">
+        <mat-label>Expense Date</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="expenseDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker color="primary"></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Note</mat-label>
+        <input matInput [(ngModel)]="expenseNote">
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="button-large" (click)="save()">Save</button>
+      <br />
+      <ng-container *ngIf="showDeleteButton">
+        <button mat-raised-button color="accent" class="button-large" (click)="deleteExpense()">Delete</button>
+        <br>
+      </ng-container>
+      <button mat-raised-button color="warn" class="button-large" (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <mat-drawer-container class="main">
   <mat-drawer mode="side" opened>
     <div class="side-nav">
@@ -13,9 +52,9 @@
       <div>
         <mat-form-field>
           <mat-label>Expense Date</mat-label>
-          <mat-select [(value)]="expenseSelectedDate" (selectionChange)="changeIncomeDate($event.value)">
-            <mat-option *ngFor="let date of expenseDate" [value]="date">
-              {{date}}
+          <mat-select [(value)]="expenseSelectedDate" (selectionChange)="changeExpenseDate()">
+            <mat-option *ngFor="let month of expenseMonth" [value]="month">
+              {{month}}
             </mat-option>
           </mat-select>
         </mat-form-field>

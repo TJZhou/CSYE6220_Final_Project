@@ -22,7 +22,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatNativeDateModule } from '@angular/material/core';
+// import { MatNativeDateModule } from '@angular/material/core';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MainComponent } from './components/main/main.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
@@ -58,9 +59,10 @@ import { HighchartsChartModule } from 'highcharts-angular';
     MatSidenavModule,
     MatListModule,
     MatTableModule,
+    // MatNativeDateModule,
+    MatMomentDateModule,
     MatDividerModule,
     MatDatepickerModule,
-    MatNativeDateModule,
     FormsModule,
     HighchartsChartModule,
     HttpClientModule,
@@ -74,7 +76,9 @@ import { HighchartsChartModule } from 'highcharts-angular';
       },
     }),
   ],
-  providers: [],
+  providers: [
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+  ],
   bootstrap: [AppComponent]
 })
 

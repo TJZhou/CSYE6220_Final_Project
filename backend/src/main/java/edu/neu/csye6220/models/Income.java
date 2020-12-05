@@ -2,6 +2,7 @@ package edu.neu.csye6220.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.neu.csye6220.models.enums.IncomeType;
 
 import javax.persistence.*;
@@ -34,9 +35,10 @@ public class Income implements Serializable {
     @Size(max = 500)
     private String note;
 
+    // @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
+    @JsonIgnore
     private User user;
 
     public long getId() {

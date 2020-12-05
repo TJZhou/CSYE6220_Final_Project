@@ -13,12 +13,12 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Income Type</mat-label>
-        <mat-select [(value)]="incomeType">
+        <mat-select [(value)]="incomeTypeKey">
           <mat-option *ngFor="let type of incomeTypes" [value]="type.key">{{ type.value }}</mat-option>
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field color="accent"  appearance="outline" style="width: 200px;">
+      <mat-form-field color="accent" appearance="outline" style="width: 200px;">
         <mat-label>Income Date</mat-label>
         <input matInput [matDatepicker]="picker" [(ngModel)]="incomeDate">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -31,15 +31,14 @@
       </mat-form-field>
 
       <button mat-raised-button color="primary" class="button-large" (click)="save()">Save</button>
-      <br/>
+      <br />
+      <ng-container *ngIf="showDeleteButton">
+        <button mat-raised-button color="accent" class="button-large" (click)="deleteIncome()">Delete</button>
+        <br>
+      </ng-container>
       <button mat-raised-button color="warn" class="button-large" (click)="cancel()">Cancel</button>
-
     </div>
   </div>
-</div>
-
-<div class="shadow" *ngIf="showUpdateIncome">
-  <p>work1</p>
 </div>
 
 <mat-drawer-container class="main">
@@ -54,7 +53,7 @@
       <div>
         <mat-form-field>
           <mat-label>Income Date</mat-label>
-          <mat-select [(value)]="incomeSelectedDate" (selectionChange)="changeIncomeDate($event.value)">
+          <mat-select [(value)]="incomeSelectedDate" (selectionChange)="changeIncomeDate()">
             <mat-option *ngFor="let month of incomeMonth" [value]="month">
               {{month}}
             </mat-option>

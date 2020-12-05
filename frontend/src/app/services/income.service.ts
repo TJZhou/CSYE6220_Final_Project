@@ -17,4 +17,16 @@ export class IncomeService {
     const params = { date };
     return this.http.get<ResponseWrapper<Income[]>>(this.incomeUrl + userId, { params });
   }
+
+  public addIncome(userId: number, income: Income): Observable<ResponseWrapper<number>> {
+    return this.http.post<ResponseWrapper<number>>(this.incomeUrl + userId, income);
+  }
+
+  public updateIncome(userId: number, income: Income): Observable<ResponseWrapper<Income>> {
+    return this.http.put<ResponseWrapper<Income>>(this.incomeUrl + userId, income);
+  }
+
+  public deleteIncome(incomeId: number): Observable<ResponseWrapper<void>> {
+    return this.http.delete<ResponseWrapper<void>>(this.incomeUrl + incomeId);
+  }
 }

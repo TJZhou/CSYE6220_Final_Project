@@ -13,19 +13,21 @@ import { Pair } from '../../models/pair';
 
 export class IncomeDetailComponent implements OnInit {
 
-  userId: number;
+  userId: number; // current userId
   isLoading: boolean;
+  incomeId: number; // the id of income which is currently edited
   incomes: Income[];
-  incomeMonth: string[];
+  incomeMonth: string[];  // recent 24 months
   incomeTypes: Pair[];
   incomeAmount: number;
-  incomeType: string;
-  incomeDate: string;
+  incomeTypeKey: number; // used together with mat-select and incomeTypes
+  incomeTypeValue: string;
+  incomeDate: string; // date of an income
   incomeNote: string;
-  displayedColumns: string[];
-  incomeSelectedDate: string;
+  displayedColumns: string[]; // head column of tables
+  incomeSelectedDate: string; // month selected, i.e. 2020-01-01, 2020-03-02
   showAddIncome: boolean;
-  showUpdateIncome: boolean;
+  showDeleteButton: boolean;
 
   constructor(private jwtHelper: JwtHelperService, private incomeService: IncomeService, private errorMessage: MatSnackBar) {
     const token = jwtHelper.decodeToken(localStorage.getItem('access_token'));
@@ -39,20 +41,20 @@ export class IncomeDetailComponent implements OnInit {
       { key: 2, value: 'Scholarship'},
       { key: 3, value: 'Other'}];
     this.showAddIncome = false;
-    this.showUpdateIncome = false;
+    this.showDeleteButton = false;
 
     const today = new Date();
     // add recent 24 months into list
     let aMonth = today.getMonth();
     let aYear = today.getFullYear();
     for (let i = 0; i < 24; i++) {
-        // add 0 if month is (1 ~ 9), eg 2020-01, 2020-02...
-        this.incomeMonth.push(aYear + (aMonth < 9 ? '-0' : '-') + (aMonth + 1));
-        aMonth--;
-        if (aMonth < 0) {
-            aMonth = 11;
-            aYear--;
-        }
+      // add 0 if month is (1 ~ 9), eg 2020-01, 2020-02...
+      this.incomeMonth.push(aYear + (aMonth < 9 ? '-0' : '-') + (aMonth + 1));
+      aMonth--;
+      if (aMonth < 0) {
+          aMonth = 11;
+          aYear--;
+      }
     }
   }
 
@@ -60,9 +62,20 @@ export class IncomeDetailComponent implements OnInit {
     this.getIncomes();
   }
 
-  public edit(event): void {
-    console.log(event);
-    this.showUpdateIncome = true;
+  public edit(event: Income): void {
+    this.showDeleteButton = true;
+    this.showAddIncome = true;
+    this.incomeId = event.incomeId;
+    this.incomeAmount = event.amount;
+    this.incomeDate = event.date;
+    this.incomeNote = event.note;
+    // map the selection list
+    this.incomeTypes.forEach(type => {
+      if (type.value === event.type) {
+        this.incomeTypeKey = type.key;
+        return;
+      }
+    });
   }
 
   // show the add income window
@@ -70,23 +83,35 @@ export class IncomeDetailComponent implements OnInit {
     this.showAddIncome = true;
   }
 
-  // save the income
+  // save or update the income
   public save(): void {
-    console.log(this.incomeAmount, this.incomeTypes[this.incomeType], this.incomeDate, this.incomeNote);
-    this.showAddIncome = false;
+    if (this.incomeId !== null && this.incomeId !== undefined) { // if id is not null, then the state is "edit an income"
+
+    } else {  // if id is null or undefined, then the state is "add an income"
+
+    }
+    // initialize form state
+    this.cancel();
+  }
+
+  public deleteIncome(): void {
+    // initialize form state
+    this.cancel();
   }
 
   public cancel(): void {
-    this.showAddIncome = false;
-    this.showUpdateIncome = false;
+    this.incomeId = null;
     this.incomeAmount = null;
-    this.incomeType = null;
+    this.incomeTypeKey = null;
+    this.incomeTypeValue = null;
     this.incomeDate = null;
     this.incomeNote = null;
+    this.showAddIncome = false;
+    this.showDeleteButton = false;
   }
 
-  public changeIncomeDate(eventDate): void {
-    // console.log(eventDate);
+  public changeIncomeDate(): void {
+    // after change the month, get income list again
     this.getIncomes();
   }
 

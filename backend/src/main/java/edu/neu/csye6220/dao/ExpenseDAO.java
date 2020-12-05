@@ -1,10 +1,12 @@
 package edu.neu.csye6220.dao;
 
 import edu.neu.csye6220.exceptions.EntryNotFoundException;
+import edu.neu.csye6220.exceptions.UserNotFoundException;
 import edu.neu.csye6220.models.Expense;
 import edu.neu.csye6220.models.User;
 import edu.neu.csye6220.models.enums.Status;
 import edu.neu.csye6220.utils.QueryUtil;
+import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +14,6 @@ import java.util.Collection;
 
 @Service(value = "ExpenseService")
 public class ExpenseDAO extends DAO{
-
-    private final UserDAO userDAO;
-
-    public ExpenseDAO(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
 
     public Expense getExpense(long id) {
         try {
@@ -55,12 +51,15 @@ public class ExpenseDAO extends DAO{
     }
 
     public long createExpense(long id, Expense expense) {
-        User user = userDAO.getUserById(id);
         try {
             begin();
+            Session session = getSession();
+            User user = session.get(User.class, id);
+            if(user == null)
+                throw new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg());
             expense.setUser(user);
             user.getExpenses().add(expense);
-            getSession().update(user);
+            session.update(user);
             commit();
             return expense.getId();
         } catch (Exception e) {

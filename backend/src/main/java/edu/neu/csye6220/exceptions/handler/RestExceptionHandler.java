@@ -19,28 +19,28 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(value = UserNotFoundException.class)
     public ResponseEntity<ResponseWrapper<String>> handleUserNotFoundException(UserNotFoundException ex) {
-        logger.warn(ex.getMessage());
+        logger.warn(ex.getCode() + "----" + ex.getMessage());
         ResponseWrapper<String> rw = new ResponseWrapper<>(ex.getCode(), ex.getMessage());
         return new ResponseEntity<>(rw, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = UserAlreadyExistsException.class)
     public ResponseEntity<ResponseWrapper<String>> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
-        logger.warn(ex.getMessage());
+        logger.warn(ex.getCode() + "----" + ex.getMessage());
         ResponseWrapper<String> rw = new ResponseWrapper<>(ex.getCode(), ex.getMessage());
         return new ResponseEntity<>(rw, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = InvalidUserInfoException.class)
     public ResponseEntity<ResponseWrapper<String>> handleInvalidUserInfoException(InvalidUserInfoException ex) {
-        logger.warn(ex.getMessage());
+        logger.warn(ex.getCode() + "----" + ex.getMessage());
         ResponseWrapper<String> rw = new ResponseWrapper<>(ex.getCode(), ex.getMessage());
         return new ResponseEntity<>(rw, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = EntryNotFoundException.class)
     public ResponseEntity<ResponseWrapper<String>> handleEntryNotFoundException(EntryNotFoundException ex) {
-        logger.warn(ex.getMessage());
+        logger.warn(ex.getCode() + "----" + ex.getMessage());
         ResponseWrapper<String> rw = new ResponseWrapper<>(ex.getCode(), ex.getMessage());
         return new ResponseEntity<>(rw, HttpStatus.BAD_REQUEST);
     }

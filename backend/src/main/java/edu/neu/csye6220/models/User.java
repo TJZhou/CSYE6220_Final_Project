@@ -1,5 +1,6 @@
 package edu.neu.csye6220.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import edu.neu.csye6220.utils.RegexUtil;
 import org.hibernate.annotations.LazyCollection;
@@ -35,14 +36,19 @@ public class User implements Serializable {
     @Pattern(regexp = RegexUtil.PHONE_PATTERN, message = RegexUtil.INVALID_PHONE)
     private String phone;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonManagedReference
+//    The annotated code is to fetch income & expense eagerly
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @JsonManagedReference
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     private Collection<Income> incomes;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonManagedReference
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
+//    @LazyCollection(LazyCollectionOption.FALSE)
+//    @JsonManagedReference
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Collection<Expense> expenses;
 
     public User() { }
