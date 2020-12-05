@@ -1,6 +1,7 @@
 package edu.neu.csye6220.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import edu.neu.csye6220.models.enums.ExpenseType;
 
 import javax.persistence.*;
@@ -27,7 +28,9 @@ public class Expense implements Serializable {
     @Enumerated(EnumType.STRING)
     private ExpenseType type;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date date;
+
     @Size(max = 500)
     private String note;
 

@@ -9,6 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class ExpenseDetailComponent implements OnInit {
 
   expenses: Expense[];
+  isLoading: false;
   displayedColumns: string[];
   expenseDate: string[];
   expenseSelectedDate: string;
@@ -16,7 +17,7 @@ export class ExpenseDetailComponent implements OnInit {
   constructor() {
     this.expenses = mockData;
     this.displayedColumns = ['amount', 'type', 'date', 'note', 'action'];
-    this.expenseDate = ['ALL'];
+    this.expenseDate = ['All'];
     const today = new Date();
     // add recent 24 months into list
     let aMonth = today.getMonth();
@@ -30,7 +31,7 @@ export class ExpenseDetailComponent implements OnInit {
             aYear--;
         }
     }
-    this.expenseSelectedDate = 'ALL';
+    this.expenseSelectedDate = 'All';
   }
 
   ngOnInit(): void {

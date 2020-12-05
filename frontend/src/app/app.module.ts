@@ -17,10 +17,12 @@ import { IncomeDetailComponent } from './components/income-detail/income-detail.
 import { HttpClientModule } from '@angular/common/http';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MainComponent } from './components/main/main.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
@@ -57,6 +59,8 @@ import { HighchartsChartModule } from 'highcharts-angular';
     MatListModule,
     MatTableModule,
     MatDividerModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     FormsModule,
     HighchartsChartModule,
     HttpClientModule,

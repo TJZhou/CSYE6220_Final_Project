@@ -9,27 +9,28 @@ import edu.neu.csye6220.utils.QueryUtil;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service(value = "userService")
 public class UserDAO extends DAO{
 
     public User checkLogin(String email, String password) {
-        User u = getUserByEmail(email);
+        Optional<User> user = getUserByEmail(email);
+        User u = user.orElseThrow(() ->
+                new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg()));
         if(!u.getPassword().equals(password))
             throw new InvalidUserInfoException(Status.INVALID_CREDENTIAL.getCode(), Status.INVALID_CREDENTIAL.getMsg());
         return u;
     }
     
-    public User getUserByEmail(String email) {
+    public Optional<User> getUserByEmail(String email) {
         Query<User> query = getSession().createNativeQuery(QueryUtil.GET_USER_BY_EMAIL, User.class);
         query.setParameter("email", email);
         try {
             begin();
-            User user = query.uniqueResult();
-            if(user != null) {
-                commit();
-                return user;
-            } else
-              throw new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg());
+            Optional<User> optionalUser = query.uniqueResultOptional();
+            commit();
+            return optionalUser;
         } catch (Exception e) {
             rollback();
             throw e;

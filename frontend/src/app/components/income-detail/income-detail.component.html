@@ -1,3 +1,47 @@
+<div class="loading" *ngIf="isLoading">
+  <mat-spinner class="my-spinner"></mat-spinner>
+</div>
+
+<div class="shadow" *ngIf="showAddIncome">
+  <div class="form-container">
+    <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center center" class="my-form">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Amount</mat-label>
+        <input matInput [(ngModel)]="incomeAmount">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Income Type</mat-label>
+        <mat-select [(value)]="incomeType">
+          <mat-option *ngFor="let type of incomeTypes" [value]="type.key">{{ type.value }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field color="accent"  appearance="outline" style="width: 200px;">
+        <mat-label>Income Date</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="incomeDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker color="primary"></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Note</mat-label>
+        <input matInput [(ngModel)]="incomeNote">
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="button-large" (click)="save()">Save</button>
+      <br/>
+      <button mat-raised-button color="warn" class="button-large" (click)="cancel()">Cancel</button>
+
+    </div>
+  </div>
+</div>
+
+<div class="shadow" *ngIf="showUpdateIncome">
+  <p>work1</p>
+</div>
+
 <mat-drawer-container class="main">
   <mat-drawer mode="side" opened>
     <div class="side-nav">
@@ -11,13 +55,13 @@
         <mat-form-field>
           <mat-label>Income Date</mat-label>
           <mat-select [(value)]="incomeSelectedDate" (selectionChange)="changeIncomeDate($event.value)">
-            <mat-option *ngFor="let date of incomeDate" [value]="date">
-              {{date}}
+            <mat-option *ngFor="let month of incomeMonth" [value]="month">
+              {{month}}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <div class="add">
-          <button mat-raised-button color="primary" (click)="add()">Add One</button>
+          <button class="button-medium" mat-raised-button color="primary" (click)="add()">Add One</button>
         </div>
       </div>
 
@@ -25,7 +69,6 @@
 
         <!--- Note that these columns can be defined in any order.
             The actual rendered columns are set as a property on the row definition" -->
-
         <!-- Amount Column -->
         <ng-container matColumnDef="amount">
           <th mat-header-cell *matHeaderCellDef> Amount </th>
@@ -53,7 +96,7 @@
         <ng-container matColumnDef="action">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element">
-            <button mat-raised-button color="primary" (click)="edit(element)">Edit</button>
+            <button class="button-small" mat-raised-button color="primary" (click)="edit(element)">Edit</button>
           </td>
         </ng-container>
 

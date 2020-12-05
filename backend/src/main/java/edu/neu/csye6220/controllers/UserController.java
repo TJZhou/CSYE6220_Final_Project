@@ -22,7 +22,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<ResponseWrapper<Long>> createUser(@RequestBody User user) {
-        if(userDAO.getUserByEmail(user.getEmail()) != null)
+        if(userDAO.getUserByEmail(user.getEmail()).isPresent())
             throw new UserAlreadyExistsException(Status.USER_ALREADY_EXISTS.getCode(), Status.USER_ALREADY_EXISTS.getMsg());
         long id = userDAO.createUser(user);
         return ResponseEntity.ok(
