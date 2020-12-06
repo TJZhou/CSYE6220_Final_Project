@@ -17,9 +17,9 @@ export class ExpenseService {
     return this.http.get<ResponseWrapper<Expense[]>>(this.expenseUrl + userId, { params });
   }
 
-  public getAndGroupExpenses(userId, date: string): Observable<ResponseWrapper<Map<string, Expense[]>>> {
+  public getAndGroupExpenses(userId, date: string): Observable<ResponseWrapper<Map<string, object>[]>> {
     const params = { date };
-    return this.http.get<ResponseWrapper<Map<string, Expense[]>>>(this.expenseUrl + userId, { params });
+    return this.http.get<ResponseWrapper<Map<string, object>[]>>(this.expenseUrl + 'overview/' + userId, { params });
   }
 
   public addExpense(userId: number, expense: Expense): Observable<ResponseWrapper<number>> {

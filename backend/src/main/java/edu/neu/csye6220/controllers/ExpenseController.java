@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Validated
 @RestController
@@ -45,11 +42,6 @@ public class ExpenseController {
         if (date.equals("All"))
             date = "";
         Collection<SumByType> res = expenseDAO.groupExpensesByType(userId, date);
-//        Map<String, Collection<Expense>> expenseMap = new HashMap<>();
-//        for(Expense expense : expenses) {
-//            expenseMap.putIfAbsent(expense.getType().toString(), new ArrayList<>());
-//            expenseMap.get(expense.getType().toString()).add(expense);
-//        }
         return ResponseEntity.ok(
                 new ResponseWrapper<>(Status.GROUP_EXPENSES_SUCCESS.getCode(), Status.GROUP_EXPENSES_SUCCESS.getMsg(), res));
     }

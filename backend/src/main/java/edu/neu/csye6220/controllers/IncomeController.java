@@ -4,16 +4,14 @@ import edu.neu.csye6220.dao.IncomeDAO;
 import edu.neu.csye6220.models.Income;
 import edu.neu.csye6220.models.ResponseWrapper;
 import edu.neu.csye6220.models.enums.Status;
+import edu.neu.csye6220.models.pojos.SumByType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Validated
 @RestController
@@ -39,18 +37,13 @@ public class IncomeController {
 
     // get all incomes first and then group by category
     @GetMapping(value = "/overview/{userId}")
-    public ResponseEntity<ResponseWrapper<Map<String, Collection<Income>>>>
+    public ResponseEntity<ResponseWrapper<Collection<SumByType>>>
     groupIncomesByCategory(@Min(1) @Max(Long.MAX_VALUE) @PathVariable long userId, @RequestParam String date) {
         if(date.equals("All"))
             date = "";
-        Collection<Income> incomes = incomeDAO.getIncomes(userId, date);
-        Map<String, Collection<Income>> incomesMap = new HashMap<>();
-        for(Income income : incomes) {
-            incomesMap.putIfAbsent(income.getType().toString(), new ArrayList<>());
-            incomesMap.get(income.getType().toString()).add(income);
-        }
+        Collection<SumByType> res = incomeDAO.groupIncomesByType(userId, date);
         return ResponseEntity.ok(
-                new ResponseWrapper<>(Status.GROUP_INCOMES_SUCCESS.getCode(), Status.GROUP_INCOMES_SUCCESS.getMsg(), incomesMap));
+                new ResponseWrapper<>(Status.GROUP_INCOMES_SUCCESS.getCode(), Status.GROUP_INCOMES_SUCCESS.getMsg(), res));
     }
 
     // create an income

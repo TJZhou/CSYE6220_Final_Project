@@ -1,9 +1,12 @@
 package edu.neu.csye6220.models.pojos;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
+@Entity
 public class SumByType {
+    @Id
     @NotBlank
     private String type;
     @NotBlank

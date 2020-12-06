@@ -12,24 +12,24 @@
     <div class="content">
       <mat-form-field>
         <mat-label>Income Date</mat-label>
-        <mat-select [(value)]="incomeSelectedDate" (selectionChange)="changeIncomeDate($event.value)">
+        <mat-select [(value)]="incomeSelectedDate" (selectionChange)="changeIncomeDate()">
           <mat-option *ngFor="let date of incomeDate" [value]="date">
             {{date}}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptions" class="pie-chart"></highcharts-chart>
+      <highcharts-chart [Highcharts]="Highcharts" [options]="incomesChartOption" class="pie-chart"></highcharts-chart>
     </div>
     <div class="content">
       <mat-form-field>
         <mat-label>Expense Date</mat-label>
-        <mat-select [(value)]="expenseSelectedDate" (selectionChange)="changeExpenseDate($event.value)">
+        <mat-select [(value)]="expenseSelectedDate" (selectionChange)="changeExpenseDate()">
           <mat-option *ngFor="let date of incomeDate" [value]="date">
             {{date}}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <highcharts-chart [Highcharts]="Highcharts" [options]="chartOptions" class="pie-chart"></highcharts-chart>
+      <highcharts-chart [Highcharts]="Highcharts" [options]="expensesChartOption" class="pie-chart"></highcharts-chart>
     </div>
   </mat-drawer-content>
 </mat-drawer-container>

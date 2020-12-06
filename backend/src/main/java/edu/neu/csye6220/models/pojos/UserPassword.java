@@ -1,15 +1,17 @@
 package edu.neu.csye6220.models.pojos;
 
+import edu.neu.csye6220.utils.RegexUtil;
+
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Pattern;
 
 public class UserPassword {
     @NotBlank
-    @Size(min = 6, max = 20, message = "Length of password should within 4 ~ 20")
+    @Pattern(regexp = RegexUtil.PASSWORD_PATTERN, message = RegexUtil.INVALID_PASSWORD)
     private String oldPassword;
 
     @NotBlank
-    @Size(min = 6, max = 20, message = "Length of password should within 4 ~ 20")
+    @Pattern(regexp = RegexUtil.PASSWORD_PATTERN, message = RegexUtil.INVALID_PASSWORD)
     private String newPassword;
 
     public UserPassword() {

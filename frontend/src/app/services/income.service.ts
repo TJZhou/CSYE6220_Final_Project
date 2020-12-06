@@ -18,6 +18,11 @@ export class IncomeService {
     return this.http.get<ResponseWrapper<Income[]>>(this.incomeUrl + userId, { params });
   }
 
+  public getAndGroupIncomes(userId, date: string): Observable<ResponseWrapper<Map<string, object>[]>> {
+    const params = { date };
+    return this.http.get<ResponseWrapper<Map<string, object>[]>>(this.incomeUrl + 'overview/' + userId, { params });
+  }
+
   public addIncome(userId: number, income: Income): Observable<ResponseWrapper<number>> {
     return this.http.post<ResponseWrapper<number>>(this.incomeUrl + userId, income);
   }

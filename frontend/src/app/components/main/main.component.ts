@@ -1,3 +1,4 @@
+import { ResponseWrapper } from './../../models/response-wrapper';
 import { Expense } from './../../models/expense';
 import { ExpenseService } from './../../services/expense.service';
 import { IncomeService } from './../../services/income.service';
@@ -24,38 +25,7 @@ export class MainComponent implements OnInit {
   incomesGroup: Map<string, Income[]>;
   expenseGroup: Map<string, Expense[]>;
   Highcharts: typeof Highcharts = Highcharts;
-  chartOptions: Highcharts.Options = {
-    chart: {
-      plotBackgroundColor: null,
-      plotBorderWidth: null,
-      plotShadow: false,
-      type: 'pie',
-      // height: 1000,
-      // width: 1000
-    },
-    // title: {
-    //   text: 'Incomes',
-    // },
-    tooltip: {
-      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
-    },
-    accessibility: {
-      point: {
-        valueSuffix: '%',
-      },
-    },
-    plotOptions: {
-      pie: {
-        allowPointSelect: true,
-        cursor: 'pointer',
-        dataLabels: {
-          enabled: true,
-          format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-        },
-      },
-    },
-    // series: mockIncome as Highcharts.SeriesOptionsType[],
-  };
+
   incomesChartOption: Highcharts.Options;
   expensesChartOption: Highcharts.Options;
 
@@ -72,24 +42,21 @@ export class MainComponent implements OnInit {
     generateMonth(this.expenseDate);
     this.incomeSelectedDate = 'All';
     this.expenseSelectedDate = 'All';
-    this.incomesChartOption = JSON.parse(JSON.stringify(this.chartOptions)); // deep copy
-    this.expensesChartOption = JSON.parse(JSON.stringify(this.chartOptions));
-    this.incomesChartOption.title = {text: 'Incomes'};
-    this.expensesChartOption.title = {text: 'Expenses'};
+    this.incomesChartOption = this.generateChart(null, 'Incomes');
+    this.expensesChartOption = this.generateChart(null, 'Expense');
   }
 
   ngOnInit(): void {
-    this.expenseService.getAndGroupExpenses(this.userId, this.expenseSelectedDate).subscribe(resp => {
-      this.expenseGroup = resp.data;
-    }, err => {
-      this.errorHandling(err);
-    });
+    this.getAndGroupIncome();
+    this.getAndGroupExpense();
   }
 
-  public changeIncomeDate(eventDate): void {
+  public changeIncomeDate(): void {
+    this.getAndGroupIncome();
   }
 
-  public changeExpenseDate(eventDate): void {
+  public changeExpenseDate(): void {
+    this.getAndGroupExpense();
   }
 
   private errorHandling(err): void {
@@ -98,5 +65,72 @@ export class MainComponent implements OnInit {
       duration: 5000,
     });
     this.isLoading = false;
+  }
+
+  private getAndGroupIncome(): void {
+    this.isLoading = true;
+    this.incomeService.getAndGroupIncomes(this.userId, this.incomeSelectedDate).subscribe(resp => {
+      this.incomesChartOption = this.successRespHandling('Income', resp);
+    }, err => {
+      this.errorHandling(err);
+    });
+  }
+
+  private getAndGroupExpense(): void {
+    this.isLoading = true;
+    this.expenseService.getAndGroupExpenses(this.userId, this.expenseSelectedDate).subscribe(resp => {
+      this.expensesChartOption = this.successRespHandling('Expense', resp);
+    }, err => {
+      this.errorHandling(err);
+    });
+  }
+
+  private successRespHandling(title: string, resp: ResponseWrapper<Map<string, object>[]>): Highcharts.Options {
+    const formatData = [];
+    resp.data.forEach(entry => {
+      // tslint:disable-next-line:no-string-literal
+      formatData.push([entry['type'], entry['sum']]);
+    });
+    this.isLoading = false;
+    return this.generateChart(formatData, title);
+  }
+
+  private generateChart(myData: Array<[string, number]>, title: string): Highcharts.Options {
+    const chartOptions: Highcharts.Options = {
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie',
+      },
+      title: {
+        text: title
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.y}, {point.percentage:.1f}%</b>',
+      },
+      accessibility: {
+        point: {
+          valueSuffix: '%',
+        },
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b>: {point.y}, {point.percentage:.1f} %',
+          },
+        },
+      },
+      series: [{
+          type: 'pie',
+          name: title,
+          data: myData
+        },
+      ]
+    };
+    return chartOptions;
   }
 }

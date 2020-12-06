@@ -5,14 +5,13 @@ import edu.neu.csye6220.exceptions.UserNotFoundException;
 import edu.neu.csye6220.models.Income;
 import edu.neu.csye6220.models.User;
 import edu.neu.csye6220.models.enums.Status;
+import edu.neu.csye6220.models.pojos.SumByType;
 import edu.neu.csye6220.utils.QueryUtil;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Map;
 
 @Service(value = "incomeService")
 public class IncomeDAO extends DAO{
@@ -97,6 +96,23 @@ public class IncomeDAO extends DAO{
             begin();
             getSession().delete(income);
             commit();
+        } catch (Exception e) {
+            rollback();
+            throw e;
+        } finally {
+            close();
+        }
+    }
+
+    public Collection<SumByType> groupIncomesByType(long userId, String date) {
+        Query<SumByType> query = getSession().createNativeQuery(QueryUtil.INCOMES_GROUP_BY_TYPE, SumByType.class);
+        query.setParameter("userId", userId);
+        query.setParameter("date", date + '%');
+        try {
+            begin();
+            Collection<SumByType> res = query.getResultList();
+            commit();
+            return res;
         } catch (Exception e) {
             rollback();
             throw e;
