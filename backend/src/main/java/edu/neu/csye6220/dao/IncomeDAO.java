@@ -10,7 +10,9 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Map;
 
 @Service(value = "incomeService")
 public class IncomeDAO extends DAO{

@@ -1,5 +1,4 @@
 import { ResponseWrapper } from './../../models/response-wrapper';
-import { users, mockToken } from './../../mock-data';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';

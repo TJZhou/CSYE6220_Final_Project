@@ -1,6 +1,6 @@
 package edu.neu.csye6220.dao;
 
-import edu.neu.csye6220.exceptions.InvalidUserInfoException;
+import edu.neu.csye6220.exceptions.CustomIllegalArgumentException;
 import edu.neu.csye6220.exceptions.UserNotFoundException;
 import edu.neu.csye6220.models.User;
 import edu.neu.csye6220.models.enums.Status;
@@ -19,7 +19,7 @@ public class UserDAO extends DAO{
         User u = user.orElseThrow(() ->
                 new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg()));
         if(!u.getPassword().equals(password))
-            throw new InvalidUserInfoException(Status.INVALID_CREDENTIAL.getCode(), Status.INVALID_CREDENTIAL.getMsg());
+            throw new CustomIllegalArgumentException(Status.INVALID_CREDENTIAL.getCode(), Status.INVALID_CREDENTIAL.getMsg());
         return u;
     }
     
@@ -91,7 +91,7 @@ public class UserDAO extends DAO{
     public User updatePassword(long id, UserPassword pswd) {
         User u = getUserById(id);
         if(!u.getPassword().equals(pswd.getOldPassword()))
-            throw new InvalidUserInfoException(Status.INVALID_CREDENTIAL.getCode(), Status.INVALID_CREDENTIAL.getMsg());
+            throw new CustomIllegalArgumentException(Status.INVALID_CREDENTIAL.getCode(), Status.INVALID_CREDENTIAL.getMsg());
         try {
             begin();
             u.setPassword(pswd.getNewPassword());

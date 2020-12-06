@@ -8,26 +8,26 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Amount</mat-label>
-        <input matInput [(ngModel)]="incomeAmount">
+        <input matInput [(ngModel)]="income.amount" type="number">
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Income Type</mat-label>
-        <mat-select [(value)]="incomeTypeKey">
-          <mat-option *ngFor="let type of incomeTypes" [value]="type.key">{{ type.value }}</mat-option>
+        <mat-select [(value)]="income.type">
+          <mat-option *ngFor="let type of incomeTypes" [value]="type">{{ type }}</mat-option>
         </mat-select>
       </mat-form-field>
 
       <mat-form-field color="accent" appearance="outline" style="width: 200px;">
         <mat-label>Income Date</mat-label>
-        <input matInput [matDatepicker]="picker" [(ngModel)]="incomeDate">
+        <input matInput [matDatepicker]="picker" [(ngModel)]="income.date">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker color="primary"></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Note</mat-label>
-        <input matInput [(ngModel)]="incomeNote">
+        <input matInput [(ngModel)]="income.note">
       </mat-form-field>
 
       <button mat-raised-button color="primary" class="button-large" (click)="save()">Save</button>

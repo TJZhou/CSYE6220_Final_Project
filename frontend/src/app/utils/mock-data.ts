@@ -1,6 +1,7 @@
-import { Expense } from './models/expense';
-import { Income } from './models/income';
-import { User } from './models/user';
+import { Expense } from '../models/expense';
+import { Income } from '../models/income';
+import { User } from '../models/user';
+import * as Highcharts from 'highcharts';
 
 export const users: User[] = [
   {
@@ -28,7 +29,7 @@ export const users: User[] = [
 
 export const incomes: Income[] = [
   {
-    incomeId: 1,
+    id: 1,
     userId: 1,
     amount: 1000,
     type: 'salary',
@@ -36,7 +37,7 @@ export const incomes: Income[] = [
     note: '',
   },
   {
-    incomeId: 2,
+    id: 2,
     userId: 1,
     amount: 1000,
     type: 'salary',
@@ -44,7 +45,7 @@ export const incomes: Income[] = [
     note: '',
   },
   {
-    incomeId: 3,
+    id: 3,
     userId: 1,
     amount: 1000,
     type: 'scholarship',
@@ -55,7 +56,7 @@ export const incomes: Income[] = [
 
 export const expenses: Expense[] = [
   {
-    expenseId: 1,
+    id: 1,
     userId: 1,
     amount: 1000,
     type: 'housing',
@@ -63,7 +64,7 @@ export const expenses: Expense[] = [
     note: 'rent fee',
   },
   {
-    expenseId: 2,
+    id: 2,
     userId: 1,
     amount: 1000,
     type: 'transportation',
@@ -71,7 +72,7 @@ export const expenses: Expense[] = [
     note: 'metro monthly pass',
   },
   {
-    expenseId: 3,
+    id: 3,
     userId: 1,
     amount: 1000,
     type: 'education',

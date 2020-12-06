@@ -22,7 +22,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-// import { MatNativeDateModule } from '@angular/material/core';
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MainComponent } from './components/main/main.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -72,7 +71,6 @@ import { HighchartsChartModule } from 'highcharts-angular';
           return localStorage.getItem('access_token');
         },
         allowedDomains: ['localhost:4200', 'localhost:8080']
-        // disallowedRoutes: ["http://example.com/examplebadroute/"],
       },
     }),
   ],

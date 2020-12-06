@@ -1,14 +1,11 @@
 package edu.neu.csye6220.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import edu.neu.csye6220.utils.RegexUtil;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Collection;
@@ -21,15 +18,15 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
+    @NotBlank
     @Pattern(regexp = RegexUtil.USERNAME_PATTERN, message = RegexUtil.INVALID_USERNAME)
     private String username;
 
-    @NotNull
+    @NotBlank
     @Pattern(regexp = RegexUtil.PASSWORD_PATTERN, message = RegexUtil.INVALID_PASSWORD)
     private String password;
 
-    @NotNull
+    @NotBlank
     @Email(message = RegexUtil.INVALID_EMAIL)
     private String email;
 
@@ -47,8 +44,8 @@ public class User implements Serializable {
 //    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
 //    @LazyCollection(LazyCollectionOption.FALSE)
 //    @JsonManagedReference
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     private Collection<Expense> expenses;
 
     public User() { }

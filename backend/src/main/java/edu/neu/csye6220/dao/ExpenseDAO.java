@@ -3,14 +3,19 @@ package edu.neu.csye6220.dao;
 import edu.neu.csye6220.exceptions.EntryNotFoundException;
 import edu.neu.csye6220.exceptions.UserNotFoundException;
 import edu.neu.csye6220.models.Expense;
+import edu.neu.csye6220.models.Income;
 import edu.neu.csye6220.models.User;
 import edu.neu.csye6220.models.enums.Status;
+import edu.neu.csye6220.models.pojos.SumByType;
 import edu.neu.csye6220.utils.QueryUtil;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service(value = "ExpenseService")
 public class ExpenseDAO extends DAO{
@@ -95,6 +100,23 @@ public class ExpenseDAO extends DAO{
             begin();
             getSession().delete(expense);
             commit();
+        } catch (Exception e) {
+            rollback();
+            throw e;
+        } finally {
+            close();
+        }
+    }
+
+    public Collection<SumByType> groupExpensesByType(long userId, String date) {
+        Query<SumByType> query = getSession().createNativeQuery(QueryUtil.EXPENSES_GROUP_BY_TYPE, SumByType.class);
+        query.setParameter("userId", userId);
+        query.setParameter("date", date + '%');
+        try {
+            begin();
+            Collection<SumByType> res = query.getResultList();
+            commit();
+            return res;
         } catch (Exception e) {
             rollback();
             throw e;

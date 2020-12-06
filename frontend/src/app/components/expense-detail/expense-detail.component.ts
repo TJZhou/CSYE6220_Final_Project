@@ -1,68 +1,48 @@
+import { ResponseWrapper } from './../../models/response-wrapper';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ExpenseService } from './../../services/expense.service';
-import { Pair } from './../../models/pair';
 import { Expense } from './../../models/expense';
 import { Component, OnInit } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { generateMonth } from './../../utils/month-generate-util';
+
 @Component({
   selector: 'app-expense-detail',
   templateUrl: './expense-detail.component.html',
   styleUrls: ['./expense-detail.component.scss']
 })
+
 export class ExpenseDetailComponent implements OnInit {
 
-  isLoading: boolean;
-  displayedColumns: string[];
   userId: number;
-  expenseId: number;
+  isLoading: boolean;
+  expense: Expense;
   expenses: Expense[];
   expenseMonth: string[];  // recent 24 months
-  expenseAmount: number;
-  expenseTypeKey: number;
-  expenseTypeValue: string;
-  expenseTypes: Pair[];
-  expenseDate: string;
-  expenseNote: string;
-  expenseSelectDate: string[];
+  expenseTypes: string[];
+  displayedColumns: string[];
   expenseSelectedDate: string;
   showAddExpense: boolean;
   showDeleteButton: boolean;
 
-  constructor(private jwtHelper: JwtHelperService, private expenseService: ExpenseService, private errorMessage: MatSnackBar) {
-    const token = jwtHelper.decodeToken(localStorage.getItem('access_token'));
+  constructor(private jwtHelper: JwtHelperService,
+              private expenseService: ExpenseService,
+              private errorMessage: MatSnackBar,
+              private router: Router,
+              private activatedRoute: ActivatedRoute) {
+    this.expense = new Expense();
+    const token = this.jwtHelper.decodeToken(localStorage.getItem('access_token'));
     this.userId = token.aud;
     this.displayedColumns = ['amount', 'type', 'date', 'note', 'action'];
-    this.expenseMonth = ['All'];
-    this.expenseSelectedDate = 'All';
-    this.expenseTypes = [
-      { key: 0, value: 'Housing'},
-      { key: 1, value: 'Transportation'},
-      { key: 2, value: 'Food'},
-      { key: 3, value: 'Utilities'},
-      { key: 4, value: 'Clothing'},
-      { key: 5, value: 'Healthcare'},
-      { key: 6, value: 'Insurance'},
-      { key: 7, value: 'Debt'},
-      { key: 8, value: 'Education'},
-      { key: 9, value: 'Entertainment'},
-      { key: 10, value: 'Other'}
-    ];
+    this.expenseTypes = ['Housing', 'Transportation', 'Food', 'Utilities', 'Clothing',
+     'Healthcare', 'Insurance', 'Debt', 'Education', 'Entertainment', 'Other'];
     this.showAddExpense = false;
     this.showDeleteButton = false;
-
-    const today = new Date();
-    // add recent 24 months into list
-    let aMonth = today.getMonth();
-    let aYear = today.getFullYear();
-    for (let i = 0; i < 24; i++) {
-      // add 0 if month is (1 ~ 9), eg 2020-01, 2020-02...
-      this.expenseMonth.push(aYear + (aMonth < 9 ? '-0' : '-') + (aMonth + 1));
-      aMonth--;
-      if (aMonth < 0) {
-          aMonth = 11;
-          aYear--;
-      }
-    }
+    this.router.navigate(['.'], {relativeTo: this.activatedRoute, queryParams: {date: 'All'}});
+    this.expenseMonth = [];
+    generateMonth(this.expenseMonth);
+    this.expenseSelectedDate = 'All';
   }
 
   ngOnInit(): void {
@@ -72,51 +52,60 @@ export class ExpenseDetailComponent implements OnInit {
   public edit(event: Expense): void {
     this.showDeleteButton = true;
     this.showAddExpense = true;
-    this.expenseId = event.expenseId;
-    this.expenseAmount = event.amount;
-    this.expenseDate = event.date;
-    this.expenseNote = event.note;
-    // map the selection list
-    this.expenseTypes.forEach(type => {
-      if (type.value === event.type) {
-        this.expenseTypeKey = type.key;
-        return;
-      }
-    });
+    this.expense = JSON.parse(JSON.stringify(event));
   }
 
   public add(): void {
     this.showAddExpense = true;
   }
 
+  // save or update the expense
   public save(): void {
-    if (this.expenseId !== null && this.expenseId !== undefined) { // if id is not null, then the state is "edit an income"
-
-    } else {  // if id is null or undefined, then the state is "add an income"
-
+    if (!this.checkFormField()) {
+      this.errorMessage.open('Please fill all blank fields and check error information', 'Err', {
+        duration: 5000,
+      });
+    } else {
+      this.isLoading = true;
+      if (this.expense.id !== null && this.expense.id !== undefined) { // if id is not null, then the state is "edit an income"
+          this.expenseService.updateExpense(this.expense.id, this.expense).subscribe(resp => {
+          this.successRespHandling(resp);
+        }, err => {
+          this.errorHandling(err);
+        });
+      } else {  // if id is null or undefined, then the state is "add an income"
+        this.expenseService.addExpense(this.userId, this.expense).subscribe(resp => {
+          this.successRespHandling(resp);
+        }, err => {
+          this.errorHandling(err);
+        });
+      }
     }
-    // initialize form state
-    this.cancel();
   }
 
   public deleteExpense(): void {
-    this.cancel();
+    this.isLoading = true;
+    this.expenseService.deleteExpense(this.expense.id).subscribe(resp => {
+      this.successRespHandling(resp);
+    }, err => {
+      this.errorHandling(err);
+    });
   }
 
+  // initialize form state
   public cancel(): void {
-    this.expenseId = null;
-    this.expenseAmount = null;
-    this.expenseTypeKey = null;
-    this.expenseTypeValue = null;
-    this.expenseDate = null;
-    this.expenseNote = null;
+    this.isLoading = false;
+    this.expense = new Expense();
     this.showAddExpense = false;
     this.showDeleteButton = false;
   }
 
+
   public changeExpenseDate(): void {
+    this.router.navigate(['.'], {relativeTo: this.activatedRoute, queryParams: {date: this.expenseSelectedDate}});
     this.getExpenses();
   }
+
 
   public getExpenses(): void {
     this.isLoading = true;
@@ -124,11 +113,28 @@ export class ExpenseDetailComponent implements OnInit {
       this.expenses = resp.data;
       this.isLoading = false;
     }, err => {
-      console.log(err);
-      this.errorMessage.open(err.error.message, 'Err', {
-        duration: 5000,
-      });
-      this.isLoading = false;
+      this.errorHandling(err);
     });
+  }
+
+  public errorHandling(err): void {
+    console.log(err);
+    this.errorMessage.open(err.error.message, 'Err', {
+      duration: 5000,
+    });
+    this.isLoading = false;
+    this.cancel();
+  }
+
+  public successRespHandling(resp: ResponseWrapper<any>): void {
+    alert(resp.message);
+    this.cancel();
+    location.reload();
+  }
+
+  public checkFormField(): boolean {
+    return this.expense.amount !== null && this.expense.amount !== undefined
+        && this.expense.date !== null && this.expense.date !== undefined
+        && this.expense.type !== null && this.expense.type !== undefined;
   }
 }

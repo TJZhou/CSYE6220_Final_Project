@@ -1,5 +1,5 @@
 export class Income {
-  incomeId: number;
+  id: number;
   userId: number;
   amount: number;
   type: string;

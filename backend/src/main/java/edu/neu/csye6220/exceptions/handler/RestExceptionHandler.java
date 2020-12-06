@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.ServletException;
 import javax.validation.ConstraintViolationException;
 
 @RestControllerAdvice
@@ -21,7 +22,7 @@ public class RestExceptionHandler {
     public ResponseEntity<ResponseWrapper<String>> handleUserNotFoundException(UserNotFoundException ex) {
         logger.warn(ex.getCode() + "----" + ex.getMessage());
         ResponseWrapper<String> rw = new ResponseWrapper<>(ex.getCode(), ex.getMessage());
-        return new ResponseEntity<>(rw, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(rw, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = UserAlreadyExistsException.class)
@@ -31,8 +32,8 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(rw, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = InvalidUserInfoException.class)
-    public ResponseEntity<ResponseWrapper<String>> handleInvalidUserInfoException(InvalidUserInfoException ex) {
+    @ExceptionHandler(value = CustomIllegalArgumentException.class)
+    public ResponseEntity<ResponseWrapper<String>> handleInvalidUserInfoException(CustomIllegalArgumentException ex) {
         logger.warn(ex.getCode() + "----" + ex.getMessage());
         ResponseWrapper<String> rw = new ResponseWrapper<>(ex.getCode(), ex.getMessage());
         return new ResponseEntity<>(rw, HttpStatus.BAD_REQUEST);
@@ -42,13 +43,29 @@ public class RestExceptionHandler {
     public ResponseEntity<ResponseWrapper<String>> handleEntryNotFoundException(EntryNotFoundException ex) {
         logger.warn(ex.getCode() + "----" + ex.getMessage());
         ResponseWrapper<String> rw = new ResponseWrapper<>(ex.getCode(), ex.getMessage());
-        return new ResponseEntity<>(rw, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(rw, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity<ResponseWrapper<String>> handleConstraintViolationException(ConstraintViolationException ex) {
         logger.warn(ex.getMessage());
         ResponseWrapper<String> rw = new ResponseWrapper<>(Status.CONSTRAINT_VIOLATION.getCode(), ex.getMessage());
-        return new ResponseEntity<>(rw, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(rw, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(value = ServletException.class)
+    public ResponseEntity<ResponseWrapper<String>> handleInternalServerException(ServletException ex) {
+        logger.error(ex.getMessage());
+        ex.printStackTrace();
+        ResponseWrapper<String>  rw = new ResponseWrapper<>(Status.SERVLET_EXCEPTION.getCode(), Status.SERVLET_EXCEPTION.getMsg());
+        return new ResponseEntity<>(rw, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<ResponseWrapper<String>> handleOtherException(Exception ex) {
+        logger.warn(ex.getMessage());
+        ex.printStackTrace();
+        ResponseWrapper<String> rw = new ResponseWrapper<>(Status.OTHER_EXCEPTION.getCode(), Status.OTHER_EXCEPTION.getMsg());
+        return new ResponseEntity<>(rw, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

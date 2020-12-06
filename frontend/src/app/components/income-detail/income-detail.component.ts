@@ -1,9 +1,11 @@
+import { ResponseWrapper } from './../../models/response-wrapper';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IncomeService } from './../../services/income.service';
 import { Component, OnInit } from '@angular/core';
 import { Income } from 'src/app/models/income';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Pair } from '../../models/pair';
+import { generateMonth } from './../../utils/month-generate-util';
 
 @Component({
   selector: 'app-income-detail',
@@ -15,47 +17,31 @@ export class IncomeDetailComponent implements OnInit {
 
   userId: number; // current userId
   isLoading: boolean;
-  incomeId: number; // the id of income which is currently edited
+  income: Income;
   incomes: Income[];
   incomeMonth: string[];  // recent 24 months
-  incomeTypes: Pair[];
-  incomeAmount: number;
-  incomeTypeKey: number; // used together with mat-select and incomeTypes
-  incomeTypeValue: string;
-  incomeDate: string; // date of an income
-  incomeNote: string;
+  incomeTypes: string[];
   displayedColumns: string[]; // head column of tables
   incomeSelectedDate: string; // month selected, i.e. 2020-01-01, 2020-03-02
   showAddIncome: boolean;
   showDeleteButton: boolean;
 
-  constructor(private jwtHelper: JwtHelperService, private incomeService: IncomeService, private errorMessage: MatSnackBar) {
-    const token = jwtHelper.decodeToken(localStorage.getItem('access_token'));
+  constructor(private jwtHelper: JwtHelperService,
+              private incomeService: IncomeService,
+              private errorMessage: MatSnackBar,
+              private router: Router,
+              private activatedRoute: ActivatedRoute) {
+    this.income = new Income();
+    const token = this.jwtHelper.decodeToken(localStorage.getItem('access_token'));
     this.userId = token.aud;
     this.displayedColumns = ['amount', 'type', 'date', 'note', 'action'];
-    this.incomeMonth = ['All'];
-    this.incomeSelectedDate = 'All';
-    this.incomeTypes = [
-      { key: 0, value: 'Salary'},
-      { key: 1, value: 'Investment'},
-      { key: 2, value: 'Scholarship'},
-      { key: 3, value: 'Other'}];
+    this.incomeTypes = ['Salary', 'Investment', 'Scholarship', 'Other'];
     this.showAddIncome = false;
     this.showDeleteButton = false;
-
-    const today = new Date();
-    // add recent 24 months into list
-    let aMonth = today.getMonth();
-    let aYear = today.getFullYear();
-    for (let i = 0; i < 24; i++) {
-      // add 0 if month is (1 ~ 9), eg 2020-01, 2020-02...
-      this.incomeMonth.push(aYear + (aMonth < 9 ? '-0' : '-') + (aMonth + 1));
-      aMonth--;
-      if (aMonth < 0) {
-          aMonth = 11;
-          aYear--;
-      }
-    }
+    this.router.navigate(['.'], {relativeTo: this.activatedRoute, queryParams: {date: 'All'}});
+    this.incomeMonth = [];
+    generateMonth(this.incomeMonth);
+    this.incomeSelectedDate = 'All';
   }
 
   ngOnInit(): void {
@@ -65,17 +51,7 @@ export class IncomeDetailComponent implements OnInit {
   public edit(event: Income): void {
     this.showDeleteButton = true;
     this.showAddIncome = true;
-    this.incomeId = event.incomeId;
-    this.incomeAmount = event.amount;
-    this.incomeDate = event.date;
-    this.incomeNote = event.note;
-    // map the selection list
-    this.incomeTypes.forEach(type => {
-      if (type.value === event.type) {
-        this.incomeTypeKey = type.key;
-        return;
-      }
-    });
+    this.income = JSON.parse(JSON.stringify(event)); // deep copy
   }
 
   // show the add income window
@@ -85,48 +61,80 @@ export class IncomeDetailComponent implements OnInit {
 
   // save or update the income
   public save(): void {
-    if (this.incomeId !== null && this.incomeId !== undefined) { // if id is not null, then the state is "edit an income"
-
-    } else {  // if id is null or undefined, then the state is "add an income"
-
+    if (!this.checkFormField()) {
+      this.errorMessage.open('Please fill all blank fields and check error information', 'Err', {
+        duration: 5000,
+      });
+    } else {
+      this.isLoading = true;
+      if (this.income.id !== null && this.income.id !== undefined) { // if id is not null, then the state is "edit an income"
+          this.incomeService.updateIncome(this.income.id, this.income).subscribe(resp => {
+          this.successRespHandling(resp);
+        }, err => {
+          this.errorHandling(err);
+        });
+      } else {  // if id is null or undefined, then the state is "add an income"
+        this.incomeService.addIncome(this.userId, this.income).subscribe(resp => {
+          this.successRespHandling(resp);
+        }, err => {
+          this.errorHandling(err);
+        });
+      }
     }
-    // initialize form state
-    this.cancel();
   }
 
   public deleteIncome(): void {
-    // initialize form state
-    this.cancel();
+    this.isLoading = true;
+    this.incomeService.deleteIncome(this.income.id).subscribe(resp => {
+      this.successRespHandling(resp);
+    }, err => {
+      this.errorHandling(err);
+    });
   }
 
+  // initialize form state
   public cancel(): void {
-    this.incomeId = null;
-    this.incomeAmount = null;
-    this.incomeTypeKey = null;
-    this.incomeTypeValue = null;
-    this.incomeDate = null;
-    this.incomeNote = null;
+    this.isLoading = false;
+    this.income = new Income();
     this.showAddIncome = false;
     this.showDeleteButton = false;
   }
 
   public changeIncomeDate(): void {
     // after change the month, get income list again
+    this.router.navigate(['.'], {relativeTo: this.activatedRoute, queryParams: {date: this.incomeSelectedDate}});
     this.getIncomes();
   }
 
+  // get incomes by month
   public getIncomes(): void {
     this.isLoading = true;
     this.incomeService.getIncomes(this.userId, this.incomeSelectedDate).subscribe(resp => {
       this.incomes = resp.data;
       this.isLoading = false;
     }, err => {
-      console.log(err);
-      this.errorMessage.open(err.error.message, 'Err', {
-        duration: 5000,
-      });
-      this.isLoading = false;
+      this.errorHandling(err);
     });
   }
-}
 
+  public errorHandling(err): void {
+    console.log(err);
+    this.errorMessage.open(err.error.message, 'Err', {
+      duration: 5000,
+    });
+    this.isLoading = false;
+    this.cancel();
+  }
+
+  public successRespHandling(resp: ResponseWrapper<any>): void {
+    alert(resp.message);
+    this.cancel();
+    location.reload();
+  }
+
+  public checkFormField(): boolean {
+    return this.income.amount !== null && this.income.amount !== undefined
+        && this.income.date !== null && this.income.date !== undefined
+        && this.income.type !== null && this.income.type !== undefined;
+  }
+}

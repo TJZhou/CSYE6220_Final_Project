@@ -1,12 +1,14 @@
 package edu.neu.csye6220.models.pojos;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 public class UserPassword {
-    @NotNull
+    @NotBlank
     @Size(min = 6, max = 20, message = "Length of password should within 4 ~ 20")
     private String oldPassword;
+
+    @NotBlank
     @Size(min = 6, max = 20, message = "Length of password should within 4 ~ 20")
     private String newPassword;
 

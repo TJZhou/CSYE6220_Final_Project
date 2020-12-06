@@ -11,11 +11,13 @@ public enum Status {
     CREATE_INCOME_SUCCESS(2011, "Successfully create an income"),
     UPDATE_INCOME_SUCCESS(2012, "Successfully update an income"),
     DELETE_INCOME_SUCCESS(2013, "Successfully delete an income"),
+    GROUP_INCOMES_SUCCESS(2014, "Successfully get incomes and group by category"),
 
     GET_EXPENSES_SUCCESS(2020, "Successfully get expenses"),
     CREATE_EXPENSE_SUCCESS(2021, "Successfully create an expense"),
     UPDATE_EXPENSE_SUCCESS(2022, "Successfully update an expense"),
     DELETE_EXPENSE_SUCCESS(2023, "Successfully delete an expense"),
+    GROUP_EXPENSES_SUCCESS(2014, "Successfully get expenses and group by category"),
 
     USER_NOT_FOUND(4000, "User not found"),
     USER_ALREADY_EXISTS(4001, "User already exists, please login"),
@@ -24,7 +26,10 @@ public enum Status {
     INCOME_NOT_FOUND(4010, "Income not found"),
     EXPENSE_NOT_FOUND(4020, "Expense not found"),
 
-    CONSTRAINT_VIOLATION(4100, "Inputs violate validation");
+    CONSTRAINT_VIOLATION(4100, "Inputs violate validation"),
+
+    SERVLET_EXCEPTION(5000, "Internal server exception, please contact admin for assistance"),
+    OTHER_EXCEPTION(5100, "Some unknown exception occur, please contact admin for assistance");
 
     private final int code;
     private final String message;
