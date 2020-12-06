@@ -2,7 +2,6 @@ import { ResponseWrapper } from './../../models/response-wrapper';
 import { Expense } from './../../models/expense';
 import { ExpenseService } from './../../services/expense.service';
 import { IncomeService } from './../../services/income.service';
-import { mockIncome, mockExpense } from './../../utils/mock-data';
 import { Component, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { generateMonth } from './../../utils/month-generate-util';

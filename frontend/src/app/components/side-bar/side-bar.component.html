@@ -1,4 +1,7 @@
 <mat-selection-list #mns [multiple]="false">
+  <div class = "icon">
+    <img src="/assets/images/icon1.png" alt="image" width="100px">
+  </div>
   <mat-list-option [routerLink]="['/main']">
     Overview
   </mat-list-option>
@@ -19,7 +22,7 @@
     Account Setting
   </mat-list-option>
   <mat-divider></mat-divider>
-  <mat-list-option (click) = "logOut()">
+  <mat-list-option (click)="logOut()">
     Log Out
   </mat-list-option>
 </mat-selection-list>
