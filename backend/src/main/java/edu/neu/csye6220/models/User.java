@@ -33,20 +33,39 @@ public class User implements Serializable {
     @Pattern(regexp = RegexUtil.PHONE_PATTERN, message = RegexUtil.INVALID_PHONE)
     private String phone;
 
-//    The annotated code is to fetch income & expense eagerly
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @JsonManagedReference
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     private Collection<Income> incomes;
 
-//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
-//    @LazyCollection(LazyCollectionOption.FALSE)
-//    @JsonManagedReference
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     private Collection<Expense> expenses;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "groupOwner", fetch = FetchType.LAZY)
+    private Collection<BillGroup> groupOwned;
+
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "group_user",
+            joinColumns = { @JoinColumn(name = "group_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id") }
+    )
+    private Collection<BillGroup> groupParticipated;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userContributor", fetch = FetchType.LAZY)
+    private Collection<Bill> billsContributed;
+
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_participated",
+            joinColumns = { @JoinColumn(name = "user_id") },
+            inverseJoinColumns = { @JoinColumn(name = "bill_id") }
+    )
+    private Collection<Bill> billsParticipated;
 
     public User() { }
 
@@ -111,5 +130,37 @@ public class User implements Serializable {
 
     public void setExpenses(Collection<Expense> expenses) {
         this.expenses = expenses;
+    }
+
+    public Collection<BillGroup> getGroupOwned() {
+        return groupOwned;
+    }
+
+    public void setGroupOwned(Collection<BillGroup> groupOwned) {
+        this.groupOwned = groupOwned;
+    }
+
+    public Collection<BillGroup> getGroupParticipated() {
+        return groupParticipated;
+    }
+
+    public void setGroupParticipated(Collection<BillGroup> groupParticipated) {
+        this.groupParticipated = groupParticipated;
+    }
+
+    public Collection<Bill> getBillsContributed() {
+        return billsContributed;
+    }
+
+    public void setBillsContributed(Collection<Bill> billsContributed) {
+        this.billsContributed = billsContributed;
+    }
+
+    public Collection<Bill> getBillsParticipated() {
+        return billsParticipated;
+    }
+
+    public void setBillsParticipated(Collection<Bill> billsParticipated) {
+        this.billsParticipated = billsParticipated;
     }
 }

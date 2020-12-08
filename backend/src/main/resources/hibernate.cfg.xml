@@ -15,5 +15,7 @@
     <mapping class="edu.neu.csye6220.models.Income"/>
     <mapping class="edu.neu.csye6220.models.Expense"/>
     <mapping class="edu.neu.csye6220.models.pojos.SumByType"/>
+    <mapping class="edu.neu.csye6220.models.BillGroup"/>
+    <mapping class="edu.neu.csye6220.models.Bill"/>
   </session-factory>
 </hibernate-configuration>

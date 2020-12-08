@@ -8,15 +8,15 @@ import edu.neu.csye6220.models.enums.Status;
 import edu.neu.csye6220.models.pojos.UserPassword;
 import edu.neu.csye6220.utils.JwtUtil;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-@Validated
 @RestController
 @RequestMapping(value = "/user")
+@Valid
 public class UserController {
 
     private final UserDAO userDAO;

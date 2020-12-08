@@ -106,7 +106,7 @@ export class MainComponent implements OnInit {
         text: title
       },
       tooltip: {
-        pointFormat: '{series.name}: <b>{point.y}, {point.percentage:.1f}%</b>',
+        pointFormat: '{series.name}: <b>{point.y}$, {point.percentage:.1f}%</b>',
       },
       accessibility: {
         point: {
@@ -119,7 +119,7 @@ export class MainComponent implements OnInit {
           cursor: 'pointer',
           dataLabels: {
             enabled: true,
-            format: '<b>{point.name}</b>: {point.y}, {point.percentage:.1f} %',
+            format: '<b>{point.name}</b>: {point.y}$, {point.percentage:.1f} %',
           },
         },
       },

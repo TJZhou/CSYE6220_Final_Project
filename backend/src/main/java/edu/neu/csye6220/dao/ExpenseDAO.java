@@ -3,7 +3,6 @@ package edu.neu.csye6220.dao;
 import edu.neu.csye6220.exceptions.EntryNotFoundException;
 import edu.neu.csye6220.exceptions.UserNotFoundException;
 import edu.neu.csye6220.models.Expense;
-import edu.neu.csye6220.models.Income;
 import edu.neu.csye6220.models.User;
 import edu.neu.csye6220.models.enums.Status;
 import edu.neu.csye6220.models.pojos.SumByType;
@@ -12,10 +11,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service(value = "ExpenseService")
 public class ExpenseDAO extends DAO{

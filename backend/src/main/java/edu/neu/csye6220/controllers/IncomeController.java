@@ -6,16 +6,16 @@ import edu.neu.csye6220.models.ResponseWrapper;
 import edu.neu.csye6220.models.enums.Status;
 import edu.neu.csye6220.models.pojos.SumByType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.Collection;
 
-@Validated
 @RestController
 @RequestMapping(value = "/income")
+@Valid
 public class IncomeController {
 
     private final IncomeDAO incomeDAO;

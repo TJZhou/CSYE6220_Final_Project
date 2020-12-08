@@ -35,7 +35,7 @@ public class Income implements Serializable {
     @Size(max = 500)
     private String note;
 
-    // @JsonBackReference
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnore

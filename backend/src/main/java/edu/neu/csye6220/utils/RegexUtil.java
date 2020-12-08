@@ -9,6 +9,8 @@ public class RegexUtil {
             "(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))";
     public static final String PHONE_PATTERN =
             "\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}";
+    public static final String GROUP_NAME_PATTERN =
+            "[a-zA-Z0-9]+([_\\.-]?[a-zA-Z0-9])*";
 
     public static final String INVALID_USERNAME =
             "Invalid username input format";
@@ -21,5 +23,8 @@ public class RegexUtil {
 
     public static final String INVALID_PHONE =
             "Invalid phone input format";
+
+    public static final String INVALID_GROUP_NAME =
+            "Invalid group name";
 
 }
