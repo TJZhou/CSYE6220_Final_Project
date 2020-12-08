@@ -10,21 +10,20 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.sql.Date;
 import java.util.Collection;
-import java.util.UUID;
 
 @Entity
-@Table(name = "group")
+@Table(name = "bill_group")
 public class BillGroup {
     @Id
     @Column(name = "group_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
 
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "group_name")
     @Pattern(regexp = RegexUtil.GROUP_NAME_PATTERN, message = RegexUtil.INVALID_GROUP_NAME)
-    private String name;
+    private String groupName;
 
     @NotNull
     @JsonIgnore
@@ -32,7 +31,7 @@ public class BillGroup {
     @JoinColumn(name = "group_owner")
     private User groupOwner;
 
-    @NotNull
+//    @NotNull
     @JsonIgnore
     @ManyToMany(mappedBy = "groupParticipated")
     private Collection<User> groupParticipants;
@@ -49,20 +48,20 @@ public class BillGroup {
     public BillGroup() {
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public User getGroupOwner() {

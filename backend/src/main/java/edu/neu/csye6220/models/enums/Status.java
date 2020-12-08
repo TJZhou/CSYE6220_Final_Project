@@ -17,7 +17,10 @@ public enum Status {
     CREATE_EXPENSE_SUCCESS(2021, "Successfully create an expense"),
     UPDATE_EXPENSE_SUCCESS(2022, "Successfully update an expense"),
     DELETE_EXPENSE_SUCCESS(2023, "Successfully delete an expense"),
-    GROUP_EXPENSES_SUCCESS(2014, "Successfully get expenses and group by category"),
+    GROUP_EXPENSES_SUCCESS(2024, "Successfully get expenses and group by category"),
+
+    CREATE_GROUP_SUCCESS(2030, "Successfully create a group"),
+    JOIN_GROUP_SUCCESS(2031, "Successfully join a group"),
 
     USER_NOT_FOUND(4000, "User not found"),
     USER_ALREADY_EXISTS(4001, "User already exists, please login"),
@@ -25,6 +28,7 @@ public enum Status {
 
     INCOME_NOT_FOUND(4010, "Income not found"),
     EXPENSE_NOT_FOUND(4020, "Expense not found"),
+    GROUP_NOT_FOUND(4030, "Group not found, please check your group id again"),
 
     CONSTRAINT_VIOLATION(4100, "Inputs violate validation"),
 

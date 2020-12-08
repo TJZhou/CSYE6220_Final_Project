@@ -34,4 +34,5 @@
     <bean id="userDAO" class="edu.neu.csye6220.dao.UserDAO"/>
     <bean id="incomeDAO" class="edu.neu.csye6220.dao.IncomeDAO"/>
     <bean id="expenseDAO" class="edu.neu.csye6220.dao.ExpenseDAO"/>
+    <bean id="groupDAO" class="edu.neu.csye6220.dao.GroupDAO"/>
 </beans>
