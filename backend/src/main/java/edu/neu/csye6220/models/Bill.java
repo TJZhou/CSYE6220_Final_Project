@@ -11,13 +11,14 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 
 @Entity
 @Table(name = "bill")
-public class Bill {
+public class Bill implements Serializable {
     @Id
     @Column(name = "bill_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

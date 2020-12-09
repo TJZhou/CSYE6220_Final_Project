@@ -2,23 +2,21 @@ package edu.neu.csye6220.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import edu.neu.csye6220.utils.RegexUtil;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.Collection;
 
 @Entity
 @Table(name = "bill_group")
-public class BillGroup {
+public class BillGroup implements Serializable {
     @Id
     @Column(name = "group_id")
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @NotNull

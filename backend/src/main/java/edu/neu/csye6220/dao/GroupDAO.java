@@ -7,6 +7,7 @@ import edu.neu.csye6220.models.Bill;
 import edu.neu.csye6220.models.BillGroup;
 import edu.neu.csye6220.models.User;
 import edu.neu.csye6220.models.enums.Status;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
@@ -77,6 +78,7 @@ public class GroupDAO extends DAO{
             User user = session.get(User.class ,userId);
             if(user == null)
                 throw new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg());
+            Hibernate.initialize(user.getGroupParticipated());
             commit();
             return user.getGroupParticipated();
         } catch (Exception e) {

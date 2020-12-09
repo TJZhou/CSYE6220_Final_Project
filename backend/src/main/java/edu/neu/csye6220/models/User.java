@@ -2,8 +2,6 @@ package edu.neu.csye6220.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.neu.csye6220.utils.RegexUtil;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -48,8 +46,7 @@ public class User implements Serializable {
     private Collection<BillGroup> groupOwned;
 
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "group_user",
             joinColumns = { @JoinColumn(name = "user_id") },

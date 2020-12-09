@@ -9,9 +9,9 @@
         </layout>
     </appender>
 
-    <logger name="org.hibernate.SQL" level="DEBUG">
-        <appender-ref ref="STDOUT" />
-    </logger>
+<!--    <logger name="org.hibernate.SQL" level="DEBUG">-->
+<!--        <appender-ref ref="STDOUT" />-->
+<!--    </logger>-->
 
 <!--    <logger name="org.hibernate.type" level="TRACE">-->
 <!--        <appender-ref ref="STDOUT" />-->
