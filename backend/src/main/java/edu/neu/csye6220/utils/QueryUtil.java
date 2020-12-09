@@ -4,6 +4,9 @@ public class QueryUtil {
     public static final String GET_USER_BY_EMAIL =
             "select * from user where email = :email";
 
+    public static final String GET_USERS_BY_IDS =
+            "select * from user where user_id in :ids";
+
     public static final String GET_INCOMES =
             "select * from income i where i.user_id = :userId and i.date like :date order by i.date desc";
 

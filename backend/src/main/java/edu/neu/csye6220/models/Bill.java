@@ -3,10 +3,15 @@ package edu.neu.csye6220.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.neu.csye6220.models.enums.ExpenseType;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 
@@ -26,13 +31,11 @@ public class Bill {
 
     @NotNull
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "user_contributor")
     public User userContributor;
 
-    @NotNull
-    @JsonIgnore
     @ManyToMany(mappedBy = "billsParticipated")
+    @LazyCollection(LazyCollectionOption.FALSE)
     public Collection<User> userParticipants;
 
     @NotNull
@@ -46,6 +49,12 @@ public class Bill {
     @Enumerated(EnumType.STRING)
     private ExpenseType type;
 
+    @NotNull
+    @DecimalMin(value = "0", message = "Amount should greater than 0")
+    @DecimalMax(value = "999999999999", message = "Amount should less than 1,000,000,000,000")
+    private BigDecimal amount;
+
+    @NotNull
     @Size(max = 500)
     private String note;
 
@@ -98,6 +107,14 @@ public class Bill {
 
     public void setType(ExpenseType type) {
         this.type = type;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public String getNote() {

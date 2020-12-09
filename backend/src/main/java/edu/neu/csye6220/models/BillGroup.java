@@ -3,6 +3,8 @@ package edu.neu.csye6220.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.neu.csye6220.utils.RegexUtil;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,18 +24,15 @@ public class BillGroup {
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "group_name")
-    @Pattern(regexp = RegexUtil.GROUP_NAME_PATTERN, message = RegexUtil.INVALID_GROUP_NAME)
     private String groupName;
 
     @NotNull
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "group_owner")
     private User groupOwner;
 
-//    @NotNull
-    @JsonIgnore
     @ManyToMany(mappedBy = "groupParticipated")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Collection<User> groupParticipants;
 
     @NotNull
@@ -41,8 +40,10 @@ public class BillGroup {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date createdAt;
 
+
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "billGroup", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "billGroup")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Collection<Bill> bills;
 
     public BillGroup() {
