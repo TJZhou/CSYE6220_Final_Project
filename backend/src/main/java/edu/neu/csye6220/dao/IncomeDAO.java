@@ -59,8 +59,7 @@ public class IncomeDAO extends DAO{
             if(user == null)
                 throw new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg());
             income.setUser(user);
-            user.getIncomes().add(income);
-            session.update(user);
+            session.save(income);
             commit();
             return income.getId();
         } catch (Exception e) {

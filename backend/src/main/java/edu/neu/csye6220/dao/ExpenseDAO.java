@@ -59,8 +59,7 @@ public class ExpenseDAO extends DAO{
             if(user == null)
                 throw new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg());
             expense.setUser(user);
-            user.getExpenses().add(expense);
-            session.update(user);
+            session.save(expense);
             commit();
             return expense.getId();
         } catch (Exception e) {

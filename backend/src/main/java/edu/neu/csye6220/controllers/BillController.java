@@ -47,20 +47,20 @@ public class BillController {
                 new ResponseWrapper<>(Status.UPDATE_BILL_INFO_SUCCESS.getCode(), Status.UPDATE_BILL_INFO_SUCCESS.getMsg()));
     }
 
-    @PostMapping("/{billId}")
+    @PutMapping("/{groupId}/{billId}")
     public ResponseEntity<ResponseWrapper<Void>>
-    updateBillParticipants(@PathVariable long billId, @RequestBody Map<String, Collection<Long>> requestBody) {
+    updateBillParticipants(@PathVariable String groupId, @PathVariable long billId, @RequestBody Map<String, Collection<Long>> requestBody) {
         if(!requestBody.containsKey("participantsId"))
             throw new CustomIllegalArgumentException(Status.INVALID_REQUEST_BODY.getCode(), Status.INVALID_REQUEST_BODY.getMsg());
-        billDAO.updateBillParticipants(billId, requestBody.get("participantsId"));
+        billDAO.updateBillParticipants(groupId, billId, requestBody.get("participantsId"));
         return ResponseEntity.ok(
                 new ResponseWrapper<>(Status.UPDATE_BILL_PARTICIPANTS_SUCCESS.getCode(), Status.UPDATE_BILL_PARTICIPANTS_SUCCESS.getMsg()));
     }
 
-    @DeleteMapping("/{billContributorId}/{groupId}/{billId}")
+    @DeleteMapping("/{groupId}/{billId}")
     public ResponseEntity<ResponseWrapper<Void>>
-    deleteBill(@PathVariable long billContributorId, @PathVariable String groupId, @PathVariable long billId) {
-        billDAO.deleteBill(billContributorId, groupId, billId);
+    deleteBill( @PathVariable String groupId, @PathVariable long billId) {
+        billDAO.deleteBill(groupId, billId);
         return ResponseEntity.ok(
                 new ResponseWrapper<>(Status.DELETE_BILL_SUCCESS.getCode(), Status.DELETE_BILL_SUCCESS.getMsg()));
     }

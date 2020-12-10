@@ -31,11 +31,11 @@ public class GroupDAO extends DAO{
                 throw new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg());
             billGroup.setId(UUID.randomUUID().toString());
             billGroup.setGroupOwner(user);
-            user.getGroupOwned().add(billGroup);
             // the owner of this group must also be the participants of this group
-            user.getGroupParticipated().add(billGroup);
             billGroup.setGroupParticipants(new ArrayList<>());
             billGroup.getGroupParticipants().add(user);
+            session.save(billGroup);
+            user.getGroupParticipated().add(billGroup);
             session.update(user);
             commit();
             return billGroup.getId();
@@ -78,9 +78,12 @@ public class GroupDAO extends DAO{
             User user = session.get(User.class ,userId);
             if(user == null)
                 throw new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg());
-            Hibernate.initialize(user.getGroupParticipated());
+            Collection<BillGroup> billGroups = user.getGroupParticipated();
+            Hibernate.initialize(billGroups);
+            for(BillGroup billGroup : billGroups)
+                Hibernate.initialize(billGroup.getGroupParticipants());
             commit();
-            return user.getGroupParticipated();
+            return billGroups;
         } catch (Exception e) {
             rollback();
             throw e;

@@ -1,6 +1,7 @@
 package edu.neu.csye6220.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.neu.csye6220.utils.RegexUtil;
 
 import javax.persistence.*;
@@ -23,27 +24,18 @@ public class User implements Serializable {
     private String username;
 
     @NotBlank
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Pattern(regexp = RegexUtil.PASSWORD_PATTERN, message = RegexUtil.INVALID_PASSWORD)
     private String password;
 
     @NotBlank
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Email(message = RegexUtil.INVALID_EMAIL)
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Pattern(regexp = RegexUtil.PHONE_PATTERN, message = RegexUtil.INVALID_PHONE)
     private String phone;
-
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
-    private Collection<Income> incomes;
-
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
-    private Collection<Expense> expenses;
-
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "groupOwner", fetch = FetchType.LAZY)
-    private Collection<BillGroup> groupOwned;
 
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -53,10 +45,6 @@ public class User implements Serializable {
             inverseJoinColumns = { @JoinColumn(name = "group_id") }
     )
     private Collection<BillGroup> groupParticipated;
-
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userContributor", fetch = FetchType.LAZY)
-    private Collection<Bill> billsContributed;
 
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -92,7 +80,6 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -101,7 +88,6 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    @JsonIgnore
     public String getEmail() {
         return email;
     }
@@ -110,7 +96,6 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    @JsonIgnore
     public String getPhone() {
         return phone;
     }
@@ -119,44 +104,12 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-    public Collection<Income> getIncomes() {
-        return incomes;
-    }
-
-    public void setIncomes(Collection<Income> incomes) {
-        this.incomes = incomes;
-    }
-
-    public Collection<Expense> getExpenses() {
-        return expenses;
-    }
-
-    public void setExpenses(Collection<Expense> expenses) {
-        this.expenses = expenses;
-    }
-
-    public Collection<BillGroup> getGroupOwned() {
-        return groupOwned;
-    }
-
-    public void setGroupOwned(Collection<BillGroup> groupOwned) {
-        this.groupOwned = groupOwned;
-    }
-
     public Collection<BillGroup> getGroupParticipated() {
         return groupParticipated;
     }
 
     public void setGroupParticipated(Collection<BillGroup> groupParticipated) {
         this.groupParticipated = groupParticipated;
-    }
-
-    public Collection<Bill> getBillsContributed() {
-        return billsContributed;
-    }
-
-    public void setBillsContributed(Collection<Bill> billsContributed) {
-        this.billsContributed = billsContributed;
     }
 
     public Collection<Bill> getBillsParticipated() {

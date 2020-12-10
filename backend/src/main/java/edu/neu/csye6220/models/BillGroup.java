@@ -2,8 +2,6 @@ package edu.neu.csye6220.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -29,8 +27,7 @@ public class BillGroup implements Serializable {
     @JoinColumn(name = "group_owner")
     private User groupOwner;
 
-    @ManyToMany(mappedBy = "groupParticipated")
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(mappedBy = "groupParticipated", fetch = FetchType.LAZY)
     private Collection<User> groupParticipants;
 
     @NotNull
@@ -40,8 +37,7 @@ public class BillGroup implements Serializable {
 
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "billGroup")
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "billGroup", fetch = FetchType.LAZY)
     private Collection<Bill> bills;
 
     public BillGroup() {

@@ -8,6 +8,7 @@ import edu.neu.csye6220.models.BillGroup;
 import edu.neu.csye6220.models.User;
 import edu.neu.csye6220.models.enums.Status;
 import edu.neu.csye6220.utils.QueryUtil;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ public class BillDAO extends DAO{
             if(billGroup == null)
                 throw new EntryNotFoundException(Status.GROUP_NOT_FOUND.getCode(), Status.GROUP_NOT_FOUND.getMsg());
             Collection<Bill> bills = billGroup.getBills();
+            Hibernate.initialize(bills);
+            for(Bill bill : bills)
+                Hibernate.initialize(bill.getUserParticipants());
             commit();
             return bills;
         } catch (Exception e) {
@@ -49,9 +53,10 @@ public class BillDAO extends DAO{
             User contributor = session.get(User.class, billContributorId);
             if(contributor == null)
                 throw new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg());
+            if(!billGroup.getGroupParticipants().contains(contributor))
+                throw new CustomIllegalArgumentException(Status.USER_NOT_IN_GROUP.getCode(), Status.USER_NOT_IN_GROUP.getMsg());
             billGroup.getBills().add(bill);
             bill.setBillGroup(billGroup);
-            contributor.getBillsContributed().add(bill);
             bill.setUserContributor(contributor);
             session.update(billGroup);
             commit();
@@ -85,22 +90,20 @@ public class BillDAO extends DAO{
         }
     }
 
-    public void deleteBill(long userId, String groupId, long billId) {
+    public void deleteBill(String groupId, long billId) {
         try {
             begin();
             Session session = getSession();
-            User user = session.get(User.class, userId);
             BillGroup group = session.get(BillGroup.class, groupId);
             Bill bill = session.get(Bill.class, billId);
-            if(user == null || group == null || bill == null)
+            if(group == null || bill == null)
                 throw new EntryNotFoundException(Status.ENTRY_NOT_FOUND.getCode(), Status.ENTRY_NOT_FOUND.getMsg());
-            if(!user.getBillsContributed().contains(bill) || !group.getBills().contains(bill))
+            if(!group.getBills().contains(bill))
                 throw new EntryNotFoundException(Status.BILL_NOT_MATCH.getCode(), Status.BILL_NOT_MATCH.getMsg());
             Collection<User> participants = bill.getUserParticipants();
             for(User participant : participants)
                 participant.getBillsParticipated().remove(bill);
             bill.getUserParticipants().clear();
-            user.getBillsContributed().remove(bill);
             group.getBills().remove(bill);
             session.delete(bill);
             commit();
@@ -113,14 +116,16 @@ public class BillDAO extends DAO{
     }
 
 
-    public void updateBillParticipants(long billId, Collection<Long> participantsId) {
+    public void updateBillParticipants(String groupId, long billId, Collection<Long> participantsId) {
         try {
             begin();
             Session session = getSession();
             Bill bill = session.get(Bill.class, billId);
             if(bill == null)
                 throw new EntryNotFoundException(Status.BILL_NOT_FOUND.getCode(), Status.BILL_NOT_FOUND.getMsg());
-            BillGroup billGroup = bill.getBillGroup();
+            BillGroup billGroup = session.get(BillGroup.class, groupId);
+            if(billGroup == null)
+                throw new EntryNotFoundException(Status.GROUP_NOT_FOUND.getCode(), Status.GROUP_NOT_FOUND.getMsg());
             Collection<User> participants = bill.getUserParticipants();
 
             // delete previous user participated

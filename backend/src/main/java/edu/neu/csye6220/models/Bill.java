@@ -3,8 +3,6 @@ package edu.neu.csye6220.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.neu.csye6220.models.enums.ExpenseType;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
@@ -35,8 +33,7 @@ public class Bill implements Serializable {
     @JoinColumn(name = "user_contributor")
     public User userContributor;
 
-    @ManyToMany(mappedBy = "billsParticipated")
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(mappedBy = "billsParticipated", fetch = FetchType.LAZY)
     public Collection<User> userParticipants;
 
     @NotNull
