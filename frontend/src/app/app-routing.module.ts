@@ -1,6 +1,7 @@
+import { BillComponent } from './components/bill/bill.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { AccountComponent } from './components/account/account.component';
-import { BillComponent } from './components/bill/bill.component';
+import { GroupComponent } from './components/group/group.component';
 import { MainComponent } from './components/main/main.component';
 import { ErrorComponent } from './components/error/error.component';
 import { LoginComponent } from './components/login/login.component';
@@ -13,6 +14,7 @@ import { IncomeDetailComponent } from './components/income-detail/income-detail.
 const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full'},
   {path: 'account', component: AccountComponent, canActivate: [AuthGuardService]},
+  {path: 'group', component: GroupComponent, canActivate: [AuthGuardService]},
   {path: 'bill', component: BillComponent, canActivate: [AuthGuardService]},
   {path: 'register', component: RegisterComponent},
   {path: 'login', component: LoginComponent},

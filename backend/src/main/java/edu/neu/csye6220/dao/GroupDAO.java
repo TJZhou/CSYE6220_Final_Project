@@ -71,6 +71,23 @@ public class GroupDAO extends DAO{
         }
     }
 
+    public BillGroup getGroup(String groupId) {
+        try {
+            begin();
+            BillGroup billGroup = getSession().get(BillGroup.class, groupId);
+            if(billGroup == null)
+                throw new EntryNotFoundException(Status.GROUP_NOT_FOUND.getCode(), Status.GROUP_NOT_FOUND.getMsg());
+            Hibernate.initialize(billGroup.getGroupParticipants());
+            commit();
+            return billGroup;
+        } catch (Exception e) {
+            rollback();
+            throw e;
+        } finally {
+            close();
+        }
+    }
+
     public Collection<BillGroup> getGroups(long userId) {
         try {
             begin();

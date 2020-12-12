@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.neu.csye6220.models.enums.ExpenseType;
 
 import javax.persistence.*;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -52,7 +49,7 @@ public class Bill implements Serializable {
     @DecimalMax(value = "999999999999", message = "Amount should less than 1,000,000,000,000")
     private BigDecimal amount;
 
-    @NotNull
+    @NotBlank
     @Size(max = 500)
     private String note;
 

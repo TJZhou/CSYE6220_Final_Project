@@ -1,0 +1,39 @@
+<div class="loading" *ngIf="isLoading">
+  <mat-spinner class="my-spinner"></mat-spinner>
+</div>
+
+<mat-drawer-container class="main">
+  <mat-drawer mode="side" opened>
+    <div class="side-nav">
+      <app-side-bar></app-side-bar>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content>
+    <div class="content">
+      <div class="header">
+        <mat-form-field class="content-input">
+          <mat-label>Input The Group Id Your Friends Shared</mat-label>
+          <input matInput [(ngModel)]="joinGroupId">
+        </mat-form-field>
+        <button class="button-medium" mat-raised-button color="primary" (click)="joinGroup()">Join!</button>
+        <br />
+        <mat-form-field class="content-input">
+          <mat-label>You Can Create Your Own! Just Input a Group Name</mat-label>
+          <input matInput [(ngModel)]="createGroupName">
+        </mat-form-field>
+        <button class="button-medium" mat-raised-button color="primary" (click)="createGroup()">Create It!</button>
+        <br /><br />
+        <ng-container *ngFor="let billGroup of billGroups">
+          <p>
+            <mat-toolbar class="cursor-pointer" (click)="showDetail(billGroup)">
+              <span>{{billGroup.groupName}}</span>
+              <span class="spacer"></span>
+              <span class="small-span">Created By {{billGroup.groupOwner.username}} At: {{billGroup.createdAt}}</span>
+            </mat-toolbar>
+          </p>
+          <br />
+        </ng-container>
+      </div>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>

@@ -2,6 +2,52 @@
   <mat-spinner class="my-spinner"></mat-spinner>
 </div>
 
+<div class="shadow" *ngIf="showAddBill">
+  <div class="form-container">
+    <div fxLayout="column" fxLayoutGap="10px" fxLayoutAlign="center center" class="my-form">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Note</mat-label>
+        <input matInput [(ngModel)]="bill.note">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Amount</mat-label>
+        <input matInput [(ngModel)]="bill.amount" type="number">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Bill Type</mat-label>
+        <mat-select [(value)]="bill.type">
+          <mat-option *ngFor="let type of billTypes" [value]="type">{{ type }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Select Participants</mat-label>
+        <mat-select [(value)]="bill.userParticipants" multiple>
+          <mat-option *ngFor="let participant of billGroup.groupParticipants" [value]="participant">{{ participant.username }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field color="accent" appearance="outline" style="width: 200px;">
+        <mat-label>Bill Date</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="bill.createdAt">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker color="primary"></mat-datepicker>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="button-large" (click)="save()">Save</button>
+      <br />
+      <ng-container *ngIf="showDeleteBillButton">
+        <button mat-raised-button color="accent" class="button-large" (click)="deleteBill()">Delete</button>
+        <br>
+      </ng-container>
+      <button mat-raised-button color="warn" class="button-large" (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <mat-drawer-container class="main">
   <mat-drawer mode="side" opened>
     <div class="side-nav">
@@ -10,66 +56,54 @@
   </mat-drawer>
   <mat-drawer-content>
     <div class="content">
-      <div class="header">
-
-        <!-- Group Basic Info -->
-        <div *ngIf="!showGroupDetail">
-          <mat-form-field class="content-input">
-            <mat-label>Input The Group Id Your Friends Shared</mat-label>
-            <input matInput [(ngModel)]="joinGroupId">
-          </mat-form-field>
-          <button class="button-medium" mat-raised-button color="primary" (click)="joinGroup()">Join!</button>
-          <br />
-          <mat-form-field class="content-input">
-            <mat-label>You Can Create Your Own! Just Input a Group Name</mat-label>
-            <input matInput [(ngModel)]="createGroupName">
-          </mat-form-field>
-          <button class="button-medium" mat-raised-button color="primary" (click)="createGroup()">Create It!</button>
-          <br /><br />
-          <ng-container *ngFor="let billGroup of billGroups">
-            <p>
-              <mat-toolbar class="cursor-pointer" (click)="showDetail(billGroup)">
-                <span>{{billGroup.groupName}}</span>
-                <span class="spacer"></span>
-                <span class="small-span">Created By {{billGroup.groupOwner.username}} At: {{billGroup.createdAt}}</span>
-              </mat-toolbar>
-            </p>
-            <br />
-          </ng-container>
+      <button class="button-medium" mat-raised-button color="primary" (click)="back()">Back</button>
+      <button class="button-medium" mat-raised-button color="primary" (click)="createBill()">Create A Bill</button>
+      <ng-container *ngIf="billGroup.groupOwner.id === userId">
+        <div class="delete">
+          <button class="button-medium" mat-raised-button color="warn" (click)="deleteGroup()">Delete</button>
         </div>
-
-        <!-- Group Detail Info -->
-        <div *ngIf="showGroupDetail">
-          <button class="button-medium" mat-raised-button color="primary"
-            (click)="showGroupDetail = false">Back</button>
-          <button class="button-medium" mat-raised-button color="primary" (click)="createBill()">Create A Bill</button>
-          <ng-container *ngIf="detailBillGroup.groupOwner.id === userId">
-            <div class="delete">
-              <button  class="button-medium" mat-raised-button color="warn" (click)="deleteGroup()">Delete</button>
-            </div>
+      </ng-container>
+      <br /> <br />
+      <mat-toolbar>
+        <mat-toolbar-row>
+          <span class="small-span">Share Your Group Id With Your Friends! </span>
+          <span class="spacer"></span>
+          <span class="small-span"> {{billGroup.id}} </span>
+        </mat-toolbar-row>
+        <mat-toolbar-row>
+          <span class="small-span">Currently Joined </span>
+          <span class="spacer"></span>
+          <ng-container *ngFor="let participant of billGroup.groupParticipants">
+            <span class="small-span"> {{participant.username}}; &nbsp;</span>
           </ng-container>
-          <br /> <br />
-          <mat-toolbar>
-            <mat-toolbar-row>
-              <span class="small-span">Share Your Group Id With Your Friends! </span>
-              <span class="spacer"></span>
-              <span class="small-span"> {{detailBillGroup.id}} </span>
-            </mat-toolbar-row>
-            <mat-toolbar-row>
-              <span class="small-span">Currently Joined </span>
-              <span class="spacer"></span>
-              <ng-container *ngFor="let participant of detailBillGroup.groupParticipants">
-                <span class="small-span"> {{participant.username}}; &nbsp;</span>
+        </mat-toolbar-row>
+      </mat-toolbar>
+      <!-- <mat-divider></mat-divider> -->
+      <mat-accordion>
+        <ng-container *ngFor="let bill of bills">
+          <mat-expansion-panel hideToggle>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{bill.note}}
+              </mat-panel-title>
+              <mat-panel-description>
+                ${{bill.amount}}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <p>Payer: {{bill.userContributor.username}}</p>
+            <p>Type: {{bill.type}}</p>
+            <p>Participants:
+              <ng-container *ngFor="let participant of bill.userParticipants">
+                {{participant.username}}; &nbsp;
               </ng-container>
-            </mat-toolbar-row>
-          </mat-toolbar>
-          <!-- <mat-divider></mat-divider> -->
-          <mat-toolbar>
-            <mat-toolbar-row></mat-toolbar-row>
-          </mat-toolbar>
-        </div>
-      </div>
-
+            </p>
+            <p>Created At: {{bill.createdAt}}</p>
+            <p *ngIf="bill.userContributor.id === userId">
+              <button class="button-small" mat-raised-button color="primary" (click)="edit(bill)">Edit</button>
+            </p>
+          </mat-expansion-panel>
+        </ng-container>
+      </mat-accordion>
     </div>
   </mat-drawer-content>
 </mat-drawer-container>

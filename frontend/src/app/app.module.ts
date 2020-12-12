@@ -10,7 +10,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { LoginComponent } from './components/login/login.component';
 import { ErrorComponent } from './components/error/error.component';
 import { SideBarComponent } from './components/side-bar/side-bar.component';
-import { BillComponent } from './components/bill/bill.component';
+import { GroupComponent } from './components/group/group.component';
 import { AccountComponent } from './components/account/account.component';
 import { ExpenseDetailComponent } from './components/expense-detail/expense-detail.component';
 import { IncomeDetailComponent } from './components/income-detail/income-detail.component';
@@ -28,8 +28,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTableModule } from '@angular/material/table';
 import { HighchartsChartModule } from 'highcharts-angular';
+import { BillComponent } from './components/bill/bill.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,10 +40,11 @@ import { HighchartsChartModule } from 'highcharts-angular';
     ErrorComponent,
     MainComponent,
     SideBarComponent,
-    BillComponent,
+    GroupComponent,
     AccountComponent,
     IncomeDetailComponent,
-    ExpenseDetailComponent
+    ExpenseDetailComponent,
+    BillComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +61,7 @@ import { HighchartsChartModule } from 'highcharts-angular';
     MatSidenavModule,
     MatListModule,
     MatTableModule,
-    // MatNativeDateModule,
+    MatExpansionModule,
     MatMomentDateModule,
     MatDividerModule,
     MatDatepickerModule,

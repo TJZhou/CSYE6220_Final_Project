@@ -65,6 +65,10 @@ public class BillController {
                 new ResponseWrapper<>(Status.DELETE_BILL_SUCCESS.getCode(), Status.DELETE_BILL_SUCCESS.getMsg()));
     }
 
+    /**
+     * Deprecated: the calculation logic will be handled in the frontend
+     */
+    @Deprecated
     @GetMapping("/calc/{groupId}")
     public ResponseEntity<ResponseWrapper<Map<String, BigDecimal>>>
     splitAndCalculateBills(@PathVariable String groupId) {

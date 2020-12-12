@@ -24,6 +24,7 @@ public enum Status {
     UPDATE_GROUP_SUCCESS(2032, "Successfully update group info"),
     DELETE_GROUP_SUCCESS(2033, "Successfully delete a group"),
     GET_GROUPS_SUCCESS(2034, "Successfully get all groups current participates in"),
+    GET_GROUP_SUCCESS(2034, "Successfully get the bill group"),
 
     CREATE_BILL_SUCCESS(2040, "Successfully create a bill"),
     GET_BILLS_SUCCESS(2041, "Successfully get bills"),

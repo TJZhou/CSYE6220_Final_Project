@@ -1,10 +1,12 @@
+import { Router, ActivatedRoute } from '@angular/router';
 import { BillGroup } from './../../models/bill-group';
+import { Bill } from '../../models/bill';
 import { GroupService } from './../../services/group.service';
 import { BillService } from './../../services/bill.service';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { getTodayDate } from './../../utils/month-generate-util';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-bill',
@@ -14,68 +16,113 @@ import { getTodayDate } from './../../utils/month-generate-util';
 export class BillComponent implements OnInit {
 
   isLoading: boolean;
+  showAddBill: boolean;
+  showDeleteBillButton: boolean;
+  billTypes: string[];
   userId: number;
-  joinGroupId: string;
-  createGroupName: string;
-  billGroups: Array<BillGroup>;
-  detailBillGroup: BillGroup;
-  showGroupDetail: boolean;
+  groupId: string;
+  billGroup: BillGroup;
+  bill: Bill;
+  bills: Array<Bill>;
 
-  constructor(private jwtHelper: JwtHelperService,
+  constructor(private router: Router,
+              private activatedRoute: ActivatedRoute,
               private billService: BillService,
               private groupService: GroupService,
-              private errorMessage: MatSnackBar) {
+              private errorMessage: MatSnackBar,
+              private jwtHelper: JwtHelperService) {
     const token = this.jwtHelper.decodeToken(localStorage.getItem('access_token'));
     this.userId = parseInt(token.aud, 10);
-    this.isLoading = false;
-    this.showGroupDetail = false;
+    this.isLoading = true;
+    this.showAddBill = false;
+    this.showDeleteBillButton = false;
+    this.bill = new Bill();
+    this.billGroup = new BillGroup();
+    // in order to fix Cannot read property 'id' of undefined thrown in console
+    this.billGroup.groupOwner = new User('', '', '', '');
+
+    this.billTypes = ['Housing', 'Transportation', 'Food', 'Utilities', 'Clothing',
+    'Healthcare', 'Insurance', 'Education', 'Entertainment', 'Other'];
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.groupId = params.groupId;
+    });
   }
 
   ngOnInit(): void {
-    this.isLoading = true;
-    this.groupService.getGroups(this.userId).subscribe(resp => {
-      this.billGroups = resp.data;
-      this.isLoading = false;
-    }, err => {
-      this.errorHandling(err);
-    });
-  }
-
-  public createGroup(): void {
-    const billGroup: BillGroup = new BillGroup();
-    billGroup.groupName = this.createGroupName;
-    billGroup.createdAt = getTodayDate();
-    this.isLoading = true;
-    this.groupService.createGroup(this.userId, billGroup).subscribe(resp => {
-      this.successRespHandling(resp);
-    }, err => {
-      this.errorHandling(err);
-    });
-  }
-
-  public joinGroup(): void {
-    this.groupService.joinGroup(this.userId, this.joinGroupId).subscribe(resp => {
-      this.successRespHandling(resp);
-    }, err => {
-      this.errorHandling(err);
-    });
-  }
-
-  public deleteGroup(): void {
-    this.groupService.deleteGroup(this.userId, this.detailBillGroup.id).subscribe(resp => {
-      this.successRespHandling(resp);
-    }, err => {
-      this.errorHandling(err);
-    });
-  }
-
-  public showDetail(billGroup: BillGroup): void {
-    this.detailBillGroup = billGroup;
-    this.showGroupDetail = true;
+    this.groupService.getGroup(this.groupId).subscribe(resp => {
+      this.billGroup = resp.data;
+      this.billService.getBills(this.billGroup.id).subscribe(resp2 => {
+        this.bills = resp2.data;
+        this.isLoading = false;
+      }, err => this.errorHandling(err));
+    }, err =>  this.errorHandling(err));
   }
 
   public createBill(): void {
+    this.showAddBill = true;
+  }
 
+  public back(): void {
+    this.router.navigateByUrl('group');
+  }
+
+  public deleteGroup(): void {
+    const confirmation = confirm('Are you sure you want to delete this group?');
+    if (confirmation) {
+      this.isLoading = true;
+      this.groupService.deleteGroup(this.userId, this.billGroup.id).subscribe(resp => {
+        this.isLoading = false;
+        this.router.navigateByUrl('group');
+      }, err => this.errorHandling(err));
+    }
+  }
+
+  public save(): void {
+    if (!this.checkFormField()) {
+      this.errorMessage.open('Please fill all blank fields and check error information', 'Err', {
+        duration: 5000,
+      });
+    } else {
+      this.isLoading = true;
+      if (this.bill.id !== null && this.bill.id !== undefined) { // if id is not null, then the state is "edit the bill"
+        this.billService.updateBillInfo(this.bill.id, this.bill).subscribe(resp => {
+          const participantsId = {participantsId: []};
+          this.bill.userParticipants.forEach(participant => participantsId.participantsId.push(participant.id));
+          this.billService.updateBillParticipants(this.billGroup.id, this.bill.id, participantsId).subscribe(resp2 => {
+            location.reload();
+          }, err => this.errorHandling(err));
+        }, err => this.errorHandling(err));
+      } else {
+        this.billService.createBill(this.userId, this.billGroup.id, this.bill).subscribe(resp => {
+          const billId = resp.data;
+          const participantsId = {participantsId: []};
+          this.bill.userParticipants.forEach(participant => participantsId.participantsId.push(participant.id));
+          this.billService.updateBillParticipants(this.billGroup.id, billId, participantsId).subscribe(resp2 => {
+            location.reload();
+          }, err => this.errorHandling(err));
+        }, err => this.errorHandling(err));
+      }
+    }
+  }
+
+  public edit(bill: Bill): void {
+    this.showDeleteBillButton = true;
+    this.showAddBill = true;
+    this.bill = JSON.parse(JSON.stringify(bill));
+  }
+
+  public deleteBill(): void {
+    this.billService.deleteBill(this.billGroup.id, this.bill.id).subscribe(resp => {
+      location.reload();
+    }, err => this.errorHandling(err));
+  }
+
+  // initialize form state
+  public cancel(): void {
+    this.showAddBill = false;
+    this.isLoading = false;
+    this.bill = new Bill();
+    this.showDeleteBillButton = false;
   }
 
   private successRespHandling(resp): void {
@@ -91,4 +138,11 @@ export class BillComponent implements OnInit {
     this.isLoading = false;
   }
 
+  public checkFormField(): boolean {
+    return this.bill.amount !== null && this.bill.amount !== undefined
+        && this.bill.createdAt !== null && this.bill.createdAt !== undefined
+        && this.bill.type !== null && this.bill.type !== undefined
+        && this.bill.note !== null && this.bill.note !== undefined
+        && this.bill.userParticipants !== null && this.bill.userParticipants !== undefined && this.bill.userParticipants.length > 0;
+  }
 }

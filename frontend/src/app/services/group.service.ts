@@ -13,12 +13,18 @@ export class GroupService {
 
   constructor(private http: HttpClient) { }
 
-  public getGroups(id: number): Observable<ResponseWrapper<Array<BillGroup>>> {
-    return this.http.get<ResponseWrapper<Array<BillGroup>>>(this.groupUrl + id);
+  // get one group based on groupId
+  public getGroup(groupId: string): Observable<ResponseWrapper<BillGroup>> {
+    return this.http.get<ResponseWrapper<BillGroup>>(this.groupUrl + 'one/' + groupId);
   }
 
-  public createGroup(id: number, billGroup: BillGroup): Observable<ResponseWrapper<string>> {
-    return this.http.post<ResponseWrapper<string>>(this.groupUrl + id, billGroup);
+  // get all groups a user participated in
+  public getGroups(userId: number): Observable<ResponseWrapper<Array<BillGroup>>> {
+    return this.http.get<ResponseWrapper<Array<BillGroup>>>(this.groupUrl + userId);
+  }
+
+  public createGroup(userId: number, billGroup: BillGroup): Observable<ResponseWrapper<string>> {
+    return this.http.post<ResponseWrapper<string>>(this.groupUrl + userId, billGroup);
   }
 
   public joinGroup(userId: number, groupId: string): Observable<ResponseWrapper<void>> {

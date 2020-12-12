@@ -25,6 +25,16 @@ public class GroupController {
         this.groupDAO = groupDAO;
     }
 
+    // get a certain group by groupId
+    @GetMapping(value="/one/{groupId}")
+    public ResponseEntity<ResponseWrapper<BillGroup>>
+    getGroup(@PathVariable String groupId) {
+        BillGroup billGroup = groupDAO.getGroup(groupId);
+        return ResponseEntity.ok(
+                new ResponseWrapper<>(Status.GET_GROUP_SUCCESS.getCode(), Status.GET_GROUP_SUCCESS.getMsg(), billGroup));
+    }
+
+    // get all groups a user joined in
     @GetMapping(value = "/{userId}")
     public ResponseEntity<ResponseWrapper<Collection<BillGroup>>>
     getGroups(@Min(1) @Max(Long.MAX_VALUE) @PathVariable long userId) {

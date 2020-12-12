@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -17,8 +18,8 @@ public class BillGroup implements Serializable {
     @Column(name = "group_id")
     private String id;
 
-    @NotNull
-    @Size(min = 1, max = 50)
+    @NotBlank
+    @Size(max = 500)
     @Column(name = "group_name")
     private String groupName;
 
