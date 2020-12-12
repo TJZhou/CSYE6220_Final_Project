@@ -26,7 +26,8 @@
       <mat-form-field appearance="outline">
         <mat-label>Select Participants</mat-label>
         <mat-select [(value)]="bill.userParticipants" multiple>
-          <mat-option *ngFor="let participant of billGroup.groupParticipants" [value]="participant">{{ participant.username }}</mat-option>
+          <mat-option *ngFor="let participant of billGroup.groupParticipants" [value]="participant">
+            {{ participant.username }}</mat-option>
         </mat-select>
       </mat-form-field>
 
@@ -78,10 +79,13 @@
           </ng-container>
         </mat-toolbar-row>
       </mat-toolbar>
+    </div>
+
+    <div class="content">
       <!-- <mat-divider></mat-divider> -->
       <mat-accordion>
         <ng-container *ngFor="let bill of bills">
-          <mat-expansion-panel hideToggle>
+          <mat-expansion-panel>
             <mat-expansion-panel-header>
               <mat-panel-title>
                 {{bill.note}}
@@ -103,6 +107,29 @@
             </p>
           </mat-expansion-panel>
         </ng-container>
+      </mat-accordion>
+    </div>
+
+    <div class="content">
+      <mat-accordion>
+        <mat-expansion-panel >
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Bill Split
+            </mat-panel-title>
+            <!-- <mat-panel-description>
+              ${{bill.amount}}
+            </mat-panel-description> -->
+          </mat-expansion-panel-header>
+          <ng-container *ngFor="let entry of billSplit | keyvalue">
+            <p>
+              <span>{{entry.key.substring(0, entry.key.indexOf('#'))}} should</span>
+              <span *ngIf="entry.value >= 0"> receive: </span>
+              <span *ngIf="entry.value < 0"> pay: </span>
+              <span>{{entry.value}}</span>
+            </p>
+          </ng-container>
+        </mat-expansion-panel>
       </mat-accordion>
     </div>
   </mat-drawer-content>

@@ -22,6 +22,7 @@ export class BillComponent implements OnInit {
   userId: number;
   groupId: string;
   billGroup: BillGroup;
+  billSplit: Map<string, number>;
   bill: Bill;
   bills: Array<Bill>;
 
@@ -38,6 +39,7 @@ export class BillComponent implements OnInit {
     this.showDeleteBillButton = false;
     this.bill = new Bill();
     this.billGroup = new BillGroup();
+    this.billSplit = new Map();
     // in order to fix Cannot read property 'id' of undefined thrown in console
     this.billGroup.groupOwner = new User('', '', '', '');
 
@@ -51,8 +53,24 @@ export class BillComponent implements OnInit {
   ngOnInit(): void {
     this.groupService.getGroup(this.groupId).subscribe(resp => {
       this.billGroup = resp.data;
+      this.billGroup.groupParticipants.forEach(user => this.billSplit.set(user.username + '#' + user.id, 0));
       this.billService.getBills(this.billGroup.id).subscribe(resp2 => {
         this.bills = resp2.data;
+        // calculate bills after splitting
+        this.bills.forEach(bill => {
+          const contributor = bill.userContributor;
+          const contributorId = contributor.username + '#' + contributor.id;
+          const participants = bill.userParticipants;
+          this.billSplit.set(contributorId, this.billSplit.get(contributorId) + bill.amount);
+          participants.forEach(participant => {
+            const participantId = participant.username + '#' + participant.id;
+            this.billSplit.set(participantId, this.billSplit.get(participantId) - bill.amount / participants.length);
+          });
+        });
+        // round to 2 decimals, eg: 12.333333 to 12.33
+        for (const key of this.billSplit.keys()) {
+          this.billSplit.set(key, Math.round((this.billSplit.get(key) + Number.EPSILON) * 100) / 100);
+        }
         this.isLoading = false;
       }, err => this.errorHandling(err));
     }, err =>  {
