@@ -3,6 +3,7 @@ package edu.neu.csye6220.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.neu.csye6220.models.enums.IncomeType;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -32,6 +33,7 @@ public class Income implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date date;
 
+    @SafeHtml
     @Size(max = 500)
     private String note;
 

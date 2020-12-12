@@ -2,6 +2,7 @@ package edu.neu.csye6220.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -18,6 +19,7 @@ public class BillGroup implements Serializable {
     @Column(name = "group_id")
     private String id;
 
+    @SafeHtml
     @NotBlank
     @Size(max = 500)
     @Column(name = "group_name")

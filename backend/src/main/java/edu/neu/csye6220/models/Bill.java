@@ -3,6 +3,7 @@ package edu.neu.csye6220.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.neu.csye6220.models.enums.ExpenseType;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -49,6 +50,7 @@ public class Bill implements Serializable {
     @DecimalMax(value = "999999999999", message = "Amount should less than 1,000,000,000,000")
     private BigDecimal amount;
 
+    @SafeHtml
     @NotBlank
     @Size(max = 500)
     private String note;

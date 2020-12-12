@@ -55,7 +55,10 @@ export class BillComponent implements OnInit {
         this.bills = resp2.data;
         this.isLoading = false;
       }, err => this.errorHandling(err));
-    }, err =>  this.errorHandling(err));
+    }, err =>  {
+      this.errorHandling(err);
+      this.router.navigateByUrl('group');
+    });
   }
 
   public createBill(): void {
