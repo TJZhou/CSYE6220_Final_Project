@@ -1,4 +1,8 @@
-<mat-drawer-container class = "main">
+<div class="loading" *ngIf="isLoading">
+  <mat-spinner class="my-spinner"></mat-spinner>
+</div>
+
+<mat-drawer-container class="main">
   <mat-drawer mode="side" opened>
     <div class="side-nav">
       <app-side-bar></app-side-bar>
@@ -6,7 +10,66 @@
   </mat-drawer>
   <mat-drawer-content>
     <div class="content">
-      Main content
+      <div class="header">
+
+        <!-- Group Basic Info -->
+        <div *ngIf="!showGroupDetail">
+          <mat-form-field class="content-input">
+            <mat-label>Input The Group Id Your Friends Shared</mat-label>
+            <input matInput [(ngModel)]="joinGroupId">
+          </mat-form-field>
+          <button class="button-medium" mat-raised-button color="primary" (click)="joinGroup()">Join!</button>
+          <br />
+          <mat-form-field class="content-input">
+            <mat-label>You Can Create Your Own! Just Input a Group Name</mat-label>
+            <input matInput [(ngModel)]="createGroupName">
+          </mat-form-field>
+          <button class="button-medium" mat-raised-button color="primary" (click)="createGroup()">Create It!</button>
+          <br /><br />
+          <ng-container *ngFor="let billGroup of billGroups">
+            <p>
+              <mat-toolbar class="cursor-pointer" (click)="showDetail(billGroup)">
+                <span>{{billGroup.groupName}}</span>
+                <span class="spacer"></span>
+                <span class="small-span">Created By {{billGroup.groupOwner.username}} At: {{billGroup.createdAt}}</span>
+              </mat-toolbar>
+            </p>
+            <br />
+          </ng-container>
+        </div>
+
+        <!-- Group Detail Info -->
+        <div *ngIf="showGroupDetail">
+          <button class="button-medium" mat-raised-button color="primary"
+            (click)="showGroupDetail = false">Back</button>
+          <button class="button-medium" mat-raised-button color="primary" (click)="createBill()">Create A Bill</button>
+          <ng-container *ngIf="detailBillGroup.groupOwner.id === userId">
+            <div class="delete">
+              <button  class="button-medium" mat-raised-button color="warn" (click)="deleteGroup()">Delete</button>
+            </div>
+          </ng-container>
+          <br /> <br />
+          <mat-toolbar>
+            <mat-toolbar-row>
+              <span class="small-span">Share Your Group Id With Your Friends! </span>
+              <span class="spacer"></span>
+              <span class="small-span"> {{detailBillGroup.id}} </span>
+            </mat-toolbar-row>
+            <mat-toolbar-row>
+              <span class="small-span">Currently Joined </span>
+              <span class="spacer"></span>
+              <ng-container *ngFor="let participant of detailBillGroup.groupParticipants">
+                <span class="small-span"> {{participant.username}}; &nbsp;</span>
+              </ng-container>
+            </mat-toolbar-row>
+          </mat-toolbar>
+          <!-- <mat-divider></mat-divider> -->
+          <mat-toolbar>
+            <mat-toolbar-row></mat-toolbar-row>
+          </mat-toolbar>
+        </div>
+      </div>
+
     </div>
   </mat-drawer-content>
 </mat-drawer-container>

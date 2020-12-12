@@ -14,3 +14,11 @@ export function generateMonth(monthArr: string[]): void {
     }
   }
 }
+
+// generate today date in "YEAR-MM-DD" format
+export function getTodayDate(): string {
+  const today = new Date();
+  const aMonth = today.getMonth() + 1;
+  const aDay = today.getDate();
+  return today.getFullYear() + (aMonth < 9 ? '-0' : '-') + aMonth + (aDay < 9 ? '-0' : '-') + aDay;
+}

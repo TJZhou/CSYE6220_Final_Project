@@ -26,7 +26,7 @@ export class UserService {
   }
 
   public updateUserInfo(user: User): Observable<ResponseWrapper<User>> {
-    return this.http.put<ResponseWrapper<User>>(this.userUrl + user.userId, user);
+    return this.http.put<ResponseWrapper<User>>(this.userUrl + user.id, user);
   }
 
   public updateUserPassword(id: number, oldPassword: string, newPassword: string): Observable<ResponseWrapper<User>> {

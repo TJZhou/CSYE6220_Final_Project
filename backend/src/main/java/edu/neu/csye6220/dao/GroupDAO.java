@@ -92,13 +92,15 @@ public class GroupDAO extends DAO{
         }
     }
 
-    public void updateGroupName(String groupId, String groupName) {
+    public void updateGroupName(long userId, String groupId, String groupName) {
         try {
             begin();
             Session session = getSession();
             BillGroup billGroup = session.get(BillGroup.class, groupId);
             if(billGroup == null)
                 throw new EntryNotFoundException(Status.GROUP_NOT_FOUND.getCode(), Status.GROUP_NOT_FOUND.getMsg());
+            if(billGroup.getGroupOwner().getId() != userId)
+                throw new CustomIllegalArgumentException(Status.INVALID_GROUP_CHANGE_PERMIT.getCode(), Status.INVALID_GROUP_CHANGE_PERMIT.getMsg());
             billGroup.setGroupName(groupName);
             session.update(billGroup);
             commit();
@@ -110,14 +112,15 @@ public class GroupDAO extends DAO{
         }
     }
 
-    public void deleteGroup(String groupId) {
+    public void deleteGroup(long userId, String groupId) {
         try {
             begin();
             Session session = getSession();
             BillGroup billGroup = session.get(BillGroup.class, groupId);
             if(billGroup == null)
                 throw new EntryNotFoundException(Status.GROUP_NOT_FOUND.getCode(), Status.GROUP_NOT_FOUND.getMsg());
-
+            if(billGroup.getGroupOwner().getId() != userId)
+                throw new CustomIllegalArgumentException(Status.INVALID_GROUP_CHANGE_PERMIT.getCode(), Status.INVALID_GROUP_CHANGE_PERMIT.getMsg());
             // remove all corresponding bills
             Collection<Bill> bills = billGroup.getBills();
             for(Bill bill : bills) {

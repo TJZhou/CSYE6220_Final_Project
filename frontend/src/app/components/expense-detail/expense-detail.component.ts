@@ -127,7 +127,7 @@ export class ExpenseDetailComponent implements OnInit {
   }
 
   public successRespHandling(resp: ResponseWrapper<any>): void {
-    alert(resp.message);
+    // alert(resp.message);
     this.cancel();
     location.reload();
   }

@@ -49,20 +49,20 @@ public class GroupController {
                 new ResponseWrapper<>(Status.JOIN_GROUP_SUCCESS.getCode(), Status.JOIN_GROUP_SUCCESS.getMsg()));
     }
 
-    @PutMapping(value = "/{groupId}")
+    @PutMapping(value = "/{userId}/{groupId}")
     public ResponseEntity<ResponseWrapper<Void>>
-    updateGroupName(@PathVariable String groupId, @RequestBody Map<String, String> requestBody) {
+    updateGroupName(@PathVariable long userId, @PathVariable String groupId, @RequestBody Map<String, String> requestBody) {
         if(!requestBody.containsKey("name"))
             throw new CustomIllegalArgumentException(Status.INVALID_REQUEST_BODY.getCode(), Status.INVALID_CREDENTIAL.getMsg());
-        groupDAO.updateGroupName(groupId, requestBody.get("name"));
+        groupDAO.updateGroupName(userId, groupId, requestBody.get("name"));
         return ResponseEntity.ok(
                 new ResponseWrapper<>(Status.UPDATE_GROUP_SUCCESS.getCode(), Status.UPDATE_GROUP_SUCCESS.getMsg()));
     }
 
-    @DeleteMapping(value = "{groupId}")
+    @DeleteMapping(value = "/{userId}/{groupId}")
     public ResponseEntity<ResponseWrapper<Void>>
-    deleteGroup(@PathVariable String groupId) {
-        groupDAO.deleteGroup(groupId);
+    deleteGroup(@PathVariable long userId, @PathVariable String groupId) {
+        groupDAO.deleteGroup(userId, groupId);
         return ResponseEntity.ok(
                 new ResponseWrapper<>(Status.DELETE_GROUP_SUCCESS.getCode(), Status.DELETE_GROUP_SUCCESS.getMsg()));
     }

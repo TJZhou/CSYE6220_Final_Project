@@ -42,6 +42,7 @@ public enum Status {
     GROUP_NOT_FOUND(4020, "Group not found, please check your group id again"),
     GROUP_ALREADY_JOINED(4021, "You have already joined this group"),
     USER_NOT_IN_GROUP(4022, "Current user doesn't exist in bill group"),
+    INVALID_GROUP_CHANGE_PERMIT(4023, "You are not the owner of this group, you don't have permission to delete or update it"),
 
     BILL_NOT_FOUND(4030, "Bill not found, please check your bill id again"),
     BILL_NOT_MATCH(4031, "Bill not match current user and group"),

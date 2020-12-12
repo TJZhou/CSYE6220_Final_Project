@@ -18,6 +18,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .side-nav {
   width: 200px;
+  overflow: hidden;
 }
 
 .background-img {
@@ -82,7 +83,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .button-medium {
-  width: 100px !important;
+  width: 120px !important;
   min-width: 50px !important;
   font-size: 16px !important;
 }
@@ -91,4 +92,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   width: 200px !important;
   min-width: 100px !important;
   font-size: 18px;
+}
+
+.mat-toolbar {
+  min-width: 500px;
+  background-color: white;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }

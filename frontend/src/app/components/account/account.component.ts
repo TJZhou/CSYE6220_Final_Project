@@ -27,7 +27,7 @@ export class AccountComponent implements OnInit {
     this.isLoading = false;
     const token = jwtHelper.decodeToken(localStorage.getItem('access_token'));
     this.user = new User(token.username, null, token.email, token.phone);
-    this.user.userId = token.aud;
+    this.user.id = token.aud;
     this.validUsername = /^[a-zA-Z0-9]+([_\.-]?[a-zA-Z0-9])*$/;
     this.validPhone = /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
     this.validPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -57,7 +57,7 @@ export class AccountComponent implements OnInit {
   public updatePassword(): void {
     if (this.passwordCheck() && this.confirmPasswordCheck()) {
       this.isLoading = true;
-      this.userService.updateUserPassword(this.user.userId, this.oldPassword, this.newPassword)
+      this.userService.updateUserPassword(this.user.id, this.oldPassword, this.newPassword)
         .subscribe(resp => {
           this.isLoading = false;
           alert('Password updated successfully');
