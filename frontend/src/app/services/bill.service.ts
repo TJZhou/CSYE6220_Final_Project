@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Bill } from '../models/bill';
 import { ResponseWrapper } from '../models/response-wrapper';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BillService {
 
-  private billUrl = 'http://localhost:8080/api/bill/';
+  private billUrl = environment.apiUrl + '/bill/';
 
   constructor(private http: HttpClient) { }
 

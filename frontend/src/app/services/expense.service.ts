@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ResponseWrapper } from '../models/response-wrapper';
 import { Expense } from '../models/expense';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExpenseService {
-  private expenseUrl = 'http://localhost:8080/api/expense/';
+  private expenseUrl = environment.apiUrl + '/expense/';
 
   constructor(private http: HttpClient) { }
 
