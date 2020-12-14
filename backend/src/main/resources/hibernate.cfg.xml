@@ -11,7 +11,7 @@
     <property name="hibernate.connection.password">Ztj0627!</property>
     <property name="hbm2ddl.auto">none</property>
     <property name="show_sql">true</property>
-    <property name="format_sql">true</property>
+    <property name="format_sql">false</property>
     <mapping class="edu.neu.csye6220.models.User"/>
     <mapping class="edu.neu.csye6220.models.Income"/>
     <mapping class="edu.neu.csye6220.models.Expense"/>

@@ -5,6 +5,7 @@ import edu.neu.csye6220.exceptions.UserNotFoundException;
 import edu.neu.csye6220.models.User;
 import edu.neu.csye6220.models.enums.Status;
 import edu.neu.csye6220.models.pojos.UserPassword;
+import edu.neu.csye6220.utils.EncryptionUtil;
 import edu.neu.csye6220.utils.QueryUtil;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,17 @@ import java.util.Optional;
 @Service(value = "userService")
 public class UserDAO extends DAO{
 
+    private final EncryptionUtil encryptionUtil;
+
+    public UserDAO(EncryptionUtil encryptionUtil) {
+        this.encryptionUtil = encryptionUtil;
+    }
+
     public User checkLogin(String email, String password) {
         Optional<User> user = getUserByEmail(email);
         User u = user.orElseThrow(() ->
                 new UserNotFoundException(Status.USER_NOT_FOUND.getCode(), Status.USER_NOT_FOUND.getMsg()));
-        if(!u.getPassword().equals(password))
+        if(!encryptionUtil.decrypt(u.getPassword()).equals(password))
             throw new CustomIllegalArgumentException(Status.INVALID_CREDENTIAL.getCode(), Status.INVALID_CREDENTIAL.getMsg());
         return u;
     }
@@ -60,6 +67,7 @@ public class UserDAO extends DAO{
         try {
             begin();
             long userId = (long) getSession().save(u);
+            u.setPassword(encryptionUtil.encrypt(u.getPassword()));
             commit();
             return userId;
         } catch (Exception e) {
@@ -90,11 +98,11 @@ public class UserDAO extends DAO{
 
     public User updatePassword(long id, UserPassword pswd) {
         User u = getUserById(id);
-        if(!u.getPassword().equals(pswd.getOldPassword()))
+        if(!encryptionUtil.decrypt(u.getPassword()).equals(pswd.getOldPassword()))
             throw new CustomIllegalArgumentException(Status.INVALID_CREDENTIAL.getCode(), Status.INVALID_CREDENTIAL.getMsg());
         try {
             begin();
-            u.setPassword(pswd.getNewPassword());
+            u.setPassword(encryptionUtil.encrypt(pswd.getNewPassword()));
             getSession().update(u);
             commit();
             return u;
