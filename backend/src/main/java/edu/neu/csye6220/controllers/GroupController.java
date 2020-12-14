@@ -51,6 +51,7 @@ public class GroupController {
                 new ResponseWrapper<>(Status.CREATE_GROUP_SUCCESS.getCode(), Status.CREATE_GROUP_SUCCESS.getMsg(), groupId));
     }
 
+    // join a group by group id
     @PostMapping(value = "/{userId}/{groupId}")
     public ResponseEntity<ResponseWrapper<Void>>
     joinGroup(@Min(1) @Max(Long.MAX_VALUE) @PathVariable long userId, @PathVariable String groupId) {
@@ -59,6 +60,7 @@ public class GroupController {
                 new ResponseWrapper<>(Status.JOIN_GROUP_SUCCESS.getCode(), Status.JOIN_GROUP_SUCCESS.getMsg()));
     }
 
+    // update a group by group id
     @PutMapping(value = "/{userId}/{groupId}")
     public ResponseEntity<ResponseWrapper<Void>>
     updateGroupName(@PathVariable long userId, @PathVariable String groupId, @RequestBody Map<String, String> requestBody) {
@@ -69,6 +71,7 @@ public class GroupController {
                 new ResponseWrapper<>(Status.UPDATE_GROUP_SUCCESS.getCode(), Status.UPDATE_GROUP_SUCCESS.getMsg()));
     }
 
+    // delete the whole group, together with all bills within this group
     @DeleteMapping(value = "/{userId}/{groupId}")
     public ResponseEntity<ResponseWrapper<Void>>
     deleteGroup(@PathVariable long userId, @PathVariable String groupId) {

@@ -23,6 +23,7 @@ public class BillController {
         this.billDAO = billDAO;
     }
 
+    // create a bill within a group
     @PostMapping("/{billContributorId}/{groupId}")
     public ResponseEntity<ResponseWrapper<Long>>
     createBill(@PathVariable long billContributorId, @PathVariable String groupId, @RequestBody Bill bill) {
@@ -31,6 +32,7 @@ public class BillController {
                 new ResponseWrapper<>(Status.CREATE_BILL_SUCCESS.getCode(), Status.CREATE_BILL_SUCCESS.getMsg(), billId));
     }
 
+    // get all bills within a group
     @GetMapping("/{groupId}")
     public ResponseEntity<ResponseWrapper<Collection<Bill>>>
     getBills(@PathVariable String groupId) {
@@ -39,6 +41,7 @@ public class BillController {
                 new ResponseWrapper<>(Status.GET_BILLS_SUCCESS.getCode(), Status.GET_BILLS_SUCCESS.getMsg(), bills));
     }
 
+    // update a certain bill by billId
     @PutMapping("/{billId}")
     public ResponseEntity<ResponseWrapper<Void>>
     updateBill(@PathVariable long billId, @RequestBody Bill bill) {
@@ -46,7 +49,7 @@ public class BillController {
         return ResponseEntity.ok(
                 new ResponseWrapper<>(Status.UPDATE_BILL_INFO_SUCCESS.getCode(), Status.UPDATE_BILL_INFO_SUCCESS.getMsg()));
     }
-
+    
     @PutMapping("/{groupId}/{billId}")
     public ResponseEntity<ResponseWrapper<Void>>
     updateBillParticipants(@PathVariable String groupId, @PathVariable long billId, @RequestBody Map<String, Collection<Long>> requestBody) {

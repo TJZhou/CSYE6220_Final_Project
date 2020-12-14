@@ -32,14 +32,15 @@ export class LoginComponent implements OnInit {
     if (!this.showErrMsg) {
       this.isLoading = true;
       this.passwordCheck().subscribe(resp => {
+        this.isLoading = false;
         localStorage.setItem('access_token', resp.data);
         this.router.navigateByUrl('main');
       }, err => {
+        this.isLoading = false;
         this.errorMessage.open('Invalid Email And/Or Password', 'Err', {
           duration: 3000,
         });
       });
-      this.isLoading = false;
     } else {
       this.errorMessage.open('Invalid Email And/Or Password', 'Err', {
         duration: 3000,
