@@ -5,6 +5,7 @@ import javax.crypto.spec.DESedeKeySpec;
 import java.security.spec.KeySpec;
 import org.apache.commons.codec.binary.Base64;
 
+// refer to https://stackoverflow.com/questions/10303767/encrypt-and-decrypt-in-java
 public class EncryptionUtil {
     private static final String UNICODE_FORMAT = "UTF8";
     public static final String DESEDE_ENCRYPTION_SCHEME = "DESede";
